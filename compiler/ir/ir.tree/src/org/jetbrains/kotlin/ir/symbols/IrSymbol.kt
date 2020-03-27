@@ -38,6 +38,9 @@ interface IrSymbol {
     val isPublicApi: Boolean
 
     fun <D, R> accept(visitor: IrSymbolVisitor<R, D>, data: D): R
+
+    // From now on, return a WrappedDescriptor as descriptor. Used to make sure no essential use is made of real descriptors.
+    fun wrapDescriptor() {}
 }
 
 interface IrBindableSymbol<out D : DeclarationDescriptor, B : IrSymbolOwner> : IrSymbol {

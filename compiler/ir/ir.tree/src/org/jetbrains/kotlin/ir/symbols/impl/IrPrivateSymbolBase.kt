@@ -31,17 +31,20 @@ abstract class IrSymbolBase<out D : DeclarationDescriptor>(override val descript
     }
 }
 
-abstract class IrBindableSymbolBase<out D : DeclarationDescriptor, B : IrSymbolOwner>(descriptor: D) :
-    IrBindableSymbol<D, B>, IrSymbolBase<D>(descriptor) {
+abstract class IrBindableSymbolBase<out D : DeclarationDescriptor, B : IrSymbolOwner>(
+    private val _descriptor: D,
+    private val doWrapDescriptor: (D) -> D? = { null }
+) :
+    IrBindableSymbol<D, B>, IrSymbolBase<D>(_descriptor) {
 
     init {
-        assert(isOriginalDescriptor(descriptor)) {
-            "Substituted descriptor $descriptor for ${descriptor.original}"
+        assert(isOriginalDescriptor(_descriptor)) {
+            "Substituted descriptor $_descriptor for ${_descriptor.original}"
         }
-        if (descriptor !is WrappedDeclarationDescriptor<*>) {
-            val containingDeclaration = descriptor.containingDeclaration
+        if (_descriptor !is WrappedDeclarationDescriptor<*>) {
+            val containingDeclaration = _descriptor.containingDeclaration
             assert(containingDeclaration == null || isOriginalDescriptor(containingDeclaration)) {
-                "Substituted containing declaration: $containingDeclaration\nfor descriptor: $descriptor"
+                "Substituted containing declaration: $containingDeclaration\nfor descriptor: $_descriptor"
             }
         }
     }
@@ -51,6 +54,18 @@ abstract class IrBindableSymbolBase<out D : DeclarationDescriptor, B : IrSymbolO
                 // TODO fix declaring/referencing value parameters: compute proper original descriptor
                 descriptor is ValueParameterDescriptor && isOriginalDescriptor(descriptor.containingDeclaration) ||
                 descriptor == descriptor.original
+
+    private var wrappedDescriptor: D? = null
+
+    override val descriptor: D
+        get() = wrappedDescriptor ?: _descriptor
+
+    override fun wrapDescriptor() {
+        if (_descriptor !is WrappedDeclarationDescriptor<*> && wrappedDescriptor == null) {
+            wrappedDescriptor = doWrapDescriptor(_descriptor)
+            (wrappedDescriptor as? WrappedDeclarationDescriptor<IrDeclaration>)?.bind(owner as IrDeclaration)
+        }
+    }
 
     private var _owner: B? = null
     override val owner: B
