@@ -50,7 +50,7 @@ class IrLazyField(
     }
 
     override var overriddenSymbols: List<IrFieldSymbol> by lazyVar {
-        symbol.descriptor.overriddenDescriptors.map {
+        descriptor.overriddenDescriptors.map {
             stubGenerator.generateFieldStub(it.original).symbol
         }.toMutableList()
     }

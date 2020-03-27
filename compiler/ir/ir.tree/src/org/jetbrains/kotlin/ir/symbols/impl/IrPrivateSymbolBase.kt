@@ -97,66 +97,89 @@ class IrExternalPackageFragmentSymbolImpl(descriptor: PackageFragmentDescriptor)
     IrExternalPackageFragmentSymbol
 
 class IrAnonymousInitializerSymbolImpl(descriptor: ClassDescriptor) :
-    IrBindableSymbolBase<ClassDescriptor, IrAnonymousInitializer>(descriptor),
+    IrBindableSymbolBase<ClassDescriptor, IrAnonymousInitializer>(descriptor, { d -> WrappedClassDescriptor(d.annotations, d.source) }),
     IrAnonymousInitializerSymbol {
     constructor(irClassSymbol: IrClassSymbol) : this(irClassSymbol.descriptor) {}
 }
 
 class IrClassSymbolImpl(descriptor: ClassDescriptor) :
-    IrBindableSymbolBase<ClassDescriptor, IrClass>(descriptor),
+    IrBindableSymbolBase<ClassDescriptor, IrClass>(descriptor, { d -> WrappedClassDescriptor(d.annotations, d.source) }),
     IrClassSymbol {
 }
 
 class IrEnumEntrySymbolImpl(descriptor: ClassDescriptor) :
-    IrBindableSymbolBase<ClassDescriptor, IrEnumEntry>(descriptor),
+    IrBindableSymbolBase<ClassDescriptor, IrEnumEntry>(descriptor, { d-> WrappedEnumEntryDescriptor(d.annotations, d.source) }),
     IrEnumEntrySymbol {
 }
 
 class IrFieldSymbolImpl(descriptor: PropertyDescriptor) :
-    IrBindableSymbolBase<PropertyDescriptor, IrField>(descriptor),
+    IrBindableSymbolBase<PropertyDescriptor, IrField>(descriptor, { d -> WrappedFieldDescriptor(d.annotations, d.source) }),
     IrFieldSymbol {
 }
 
 class IrTypeParameterSymbolImpl(descriptor: TypeParameterDescriptor) :
-    IrBindableSymbolBase<TypeParameterDescriptor, IrTypeParameter>(descriptor),
+    IrBindableSymbolBase<TypeParameterDescriptor, IrTypeParameter>(
+        descriptor,
+        { d -> WrappedTypeParameterDescriptor(d.annotations, d.source) }
+    ),
     IrTypeParameterSymbol {
 }
 
 class IrValueParameterSymbolImpl(descriptor: ParameterDescriptor) :
-    IrBindableSymbolBase<ParameterDescriptor, IrValueParameter>(descriptor),
+    IrBindableSymbolBase<ParameterDescriptor, IrValueParameter>(
+        descriptor,
+        { d ->
+            if (d is ReceiverParameterDescriptor)
+                WrappedReceiverParameterDescriptor(d.annotations, d.source)
+            else
+                WrappedValueParameterDescriptor(d.annotations, d.source)
+        }
+    ),
     IrValueParameterSymbol {
 }
 
 class IrVariableSymbolImpl(descriptor: VariableDescriptor) :
-    IrBindableSymbolBase<VariableDescriptor, IrVariable>(descriptor),
+    IrBindableSymbolBase<VariableDescriptor, IrVariable>(descriptor, { d -> WrappedVariableDescriptor(d.annotations, d.source) }),
     IrVariableSymbol {
 }
 
 class IrSimpleFunctionSymbolImpl(descriptor: FunctionDescriptor) :
-    IrBindableSymbolBase<FunctionDescriptor, IrSimpleFunction>(descriptor),
+    IrBindableSymbolBase<FunctionDescriptor, IrSimpleFunction>(
+        descriptor,
+        { d -> WrappedSimpleFunctionDescriptor(d.annotations, d.source) }
+    ),
     IrSimpleFunctionSymbol {
 }
 
 class IrConstructorSymbolImpl(descriptor: ClassConstructorDescriptor) :
-    IrBindableSymbolBase<ClassConstructorDescriptor, IrConstructor>(descriptor),
+    IrBindableSymbolBase<ClassConstructorDescriptor, IrConstructor>(
+        descriptor,
+        { d -> WrappedClassConstructorDescriptor(d.annotations, d.source) }
+    ),
     IrConstructorSymbol {
 }
 
 class IrReturnableBlockSymbolImpl(descriptor: FunctionDescriptor) :
-    IrBindableSymbolBase<FunctionDescriptor, IrReturnableBlock>(descriptor),
+    IrBindableSymbolBase<FunctionDescriptor, IrReturnableBlock>(
+        descriptor,
+        { d -> WrappedSimpleFunctionDescriptor(d.annotations, d.source) }
+    ),
     IrReturnableBlockSymbol
 
 class IrPropertySymbolImpl(descriptor: PropertyDescriptor) :
-    IrBindableSymbolBase<PropertyDescriptor, IrProperty>(descriptor),
+    IrBindableSymbolBase<PropertyDescriptor, IrProperty>(descriptor, { d -> WrappedPropertyDescriptor(d.annotations, d.source) }),
     IrPropertySymbol {
 }
 
 class IrLocalDelegatedPropertySymbolImpl(descriptor: VariableDescriptorWithAccessors) :
-    IrBindableSymbolBase<VariableDescriptorWithAccessors, IrLocalDelegatedProperty>(descriptor),
+    IrBindableSymbolBase<VariableDescriptorWithAccessors, IrLocalDelegatedProperty>(
+        descriptor,
+        { d -> WrappedVariableDescriptorWithAccessor() }
+    ),
     IrLocalDelegatedPropertySymbol
 
 class IrTypeAliasSymbolImpl(descriptor: TypeAliasDescriptor) :
-    IrBindableSymbolBase<TypeAliasDescriptor, IrTypeAlias>(descriptor),
+    IrBindableSymbolBase<TypeAliasDescriptor, IrTypeAlias>(descriptor, { d -> WrappedTypeAliasDescriptor(d.annotations, d.source) }),
     IrTypeAliasSymbol {
 }
 

@@ -69,7 +69,7 @@ class IrFieldImpl(
         symbol.bind(this)
     }
 
-    override val descriptor: PropertyDescriptor = symbol.descriptor
+    override val descriptor: PropertyDescriptor get() = symbol.descriptor
 
     override var initializerField: IrExpressionBody? = null
 

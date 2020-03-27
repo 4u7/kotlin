@@ -64,7 +64,7 @@ class IrValueParameterImpl(
         isNoinline = descriptor.safeAs<ValueParameterDescriptor>()?.isNoinline ?: false
     )
 
-    override val descriptor: ParameterDescriptor = symbol.descriptor
+    override val descriptor: ParameterDescriptor get() = symbol.descriptor
 
     init {
         symbol.bind(this)
