@@ -26,7 +26,7 @@ class IrLazyProperty(
     endOffset: Int,
     origin: IrDeclarationOrigin,
     override val symbol: IrPropertySymbol,
-    override val descriptor: PropertyDescriptor,
+    trueDescriptor: PropertyDescriptor,
     override val name: Name,
     override val visibility: Visibility,
     override val modality: Modality,
@@ -41,30 +41,32 @@ class IrLazyProperty(
     typeTranslator: TypeTranslator,
     bindingContext: BindingContext? = null
 ) :
-    IrLazyDeclarationBase(startOffset, endOffset, origin, stubGenerator, typeTranslator),
+    IrLazyDeclarationBase(startOffset, endOffset, trueDescriptor, origin, stubGenerator, typeTranslator),
     IrProperty {
 
     init {
         symbol.bind(this)
     }
 
+    override val descriptor = symbol.descriptor
+
     private val hasBackingField: Boolean =
-        descriptor.hasBackingField(bindingContext) || stubGenerator.extensions.isPropertyWithPlatformField(descriptor)
+        trueDescriptor.hasBackingField(bindingContext) || stubGenerator.extensions.isPropertyWithPlatformField(trueDescriptor)
 
     override var backingField: IrField? by lazyVar {
         if (hasBackingField) {
-            stubGenerator.generateFieldStub(descriptor).apply {
+            stubGenerator.generateFieldStub(trueDescriptor).apply {
                 correspondingPropertySymbol = this@IrLazyProperty.symbol
             }
         } else null
     }
     override var getter: IrSimpleFunction? by lazyVar {
-        descriptor.getter?.let { stubGenerator.generateFunctionStub(it, createPropertyIfNeeded = false) }?.apply {
+        trueDescriptor.getter?.let { stubGenerator.generateFunctionStub(it, createPropertyIfNeeded = false) }?.apply {
             correspondingPropertySymbol = this@IrLazyProperty.symbol
         }
     }
     override var setter: IrSimpleFunction? by lazyVar {
-        descriptor.setter?.let { stubGenerator.generateFunctionStub(it, createPropertyIfNeeded = false) }?.apply {
+        trueDescriptor.setter?.let { stubGenerator.generateFunctionStub(it, createPropertyIfNeeded = false) }?.apply {
             correspondingPropertySymbol = this@IrLazyProperty.symbol
         }
     }

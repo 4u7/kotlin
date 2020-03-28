@@ -25,22 +25,24 @@ class IrLazyTypeAlias(
     endOffset: Int,
     origin: IrDeclarationOrigin,
     override val symbol: IrTypeAliasSymbol,
-    override val descriptor: TypeAliasDescriptor,
+    trueDescriptor: TypeAliasDescriptor,
     override val name: Name,
     override val visibility: Visibility,
     override val isActual: Boolean,
     stubGenerator: DeclarationStubGenerator,
     typeTranslator: TypeTranslator
 ) :
-    IrLazyDeclarationBase(startOffset, endOffset, origin, stubGenerator, typeTranslator),
+    IrLazyDeclarationBase(startOffset, endOffset, trueDescriptor, origin, stubGenerator, typeTranslator),
     IrTypeAlias {
 
     init {
         symbol.bind(this)
     }
 
+    override val descriptor get() = symbol.descriptor
+
     override var typeParameters: List<IrTypeParameter> by lazyVar {
-        descriptor.declaredTypeParameters.mapTo(arrayListOf()) {
+        trueDescriptor.declaredTypeParameters.mapTo(arrayListOf()) {
             stubGenerator.generateOrGetTypeParameterStub(it)
         }
     }
@@ -48,7 +50,7 @@ class IrLazyTypeAlias(
     override val expandedType: IrType by lazy {
         withInitialIr {
             typeTranslator.buildWithScope(this) {
-                descriptor.expandedType.toIrType()
+                trueDescriptor.expandedType.toIrType()
             }
         }
     }

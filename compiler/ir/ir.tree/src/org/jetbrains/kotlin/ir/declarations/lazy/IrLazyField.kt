@@ -27,7 +27,7 @@ class IrLazyField(
     endOffset: Int,
     origin: IrDeclarationOrigin,
     override val symbol: IrFieldSymbol,
-    override val descriptor: PropertyDescriptor,
+    trueDescriptor: PropertyDescriptor,
     override val name: Name,
     override val visibility: Visibility,
     override val isFinal: Boolean,
@@ -36,31 +36,33 @@ class IrLazyField(
     override val isFakeOverride: Boolean,
     stubGenerator: DeclarationStubGenerator,
     typeTranslator: TypeTranslator
-) : IrLazyDeclarationBase(startOffset, endOffset, origin, stubGenerator, typeTranslator),
+) : IrLazyDeclarationBase(startOffset, endOffset, trueDescriptor, origin, stubGenerator, typeTranslator),
     IrField {
 
     init {
         symbol.bind(this)
     }
 
+    override val descriptor get() = symbol.descriptor
+
     override var annotations: List<IrConstructorCall> by lazyVar {
-        descriptor.backingField?.annotations
+        trueDescriptor.backingField?.annotations
             ?.mapNotNullTo(mutableListOf(), typeTranslator.constantValueGenerator::generateAnnotationConstructorCall)
             ?: mutableListOf()
     }
 
     override var overriddenSymbols: List<IrFieldSymbol> by lazyVar {
-        descriptor.overriddenDescriptors.map {
+        trueDescriptor.overriddenDescriptors.map {
             stubGenerator.generateFieldStub(it.original).symbol
         }.toMutableList()
     }
 
     override var type: IrType by lazyVar {
-        descriptor.type.toIrType()
+        trueDescriptor.type.toIrType()
     }
 
     override var initializer: IrExpressionBody? by lazyVar {
-        descriptor.compileTimeInitializer?.let {
+        trueDescriptor.compileTimeInitializer?.let {
             IrExpressionBodyImpl(
                 typeTranslator.constantValueGenerator.generateConstantValueAsExpression(UNDEFINED_OFFSET, UNDEFINED_OFFSET, it)
             )
@@ -68,7 +70,7 @@ class IrLazyField(
     }
 
     override var correspondingPropertySymbol: IrPropertySymbol? by lazyVar {
-        stubGenerator.generatePropertyStub(descriptor).symbol
+        stubGenerator.generatePropertyStub(trueDescriptor).symbol
     }
 
     override fun <R, D> accept(visitor: IrElementVisitor<R, D>, data: D): R {

@@ -45,7 +45,7 @@ class IrCallImpl(
 
     init {
         if (symbol is IrConstructorSymbol) {
-            throw AssertionError("Should be IrConstructorCall: ${symbol.descriptor}")
+            throw AssertionError("Should be IrConstructorCall: ${symbol.trueDescriptor}")
         }
     }
 
@@ -57,7 +57,7 @@ class IrCallImpl(
         origin: IrStatementOrigin? = null,
         superQualifierSymbol: IrClassSymbol? = null
     ) : this(
-        startOffset, endOffset, type, symbol, symbol.descriptor.typeParametersCount, symbol.descriptor.valueParameters.size,
+        startOffset, endOffset, type, symbol, symbol.trueDescriptor.typeParametersCount, symbol.trueDescriptor.valueParameters.size,
         origin, superQualifierSymbol
     )
 
@@ -70,7 +70,7 @@ class IrCallImpl(
         origin: IrStatementOrigin? = null,
         superQualifierSymbol: IrClassSymbol? = null
     ) : this(
-        startOffset, endOffset, type, symbol, typeArgumentsCount, symbol.descriptor.valueParameters.size,
+        startOffset, endOffset, type, symbol, typeArgumentsCount, symbol.trueDescriptor.valueParameters.size,
         origin, superQualifierSymbol
     )
 

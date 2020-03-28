@@ -14,7 +14,7 @@ import org.jetbrains.kotlin.descriptors.Visibilities
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.descriptors.IrBuiltIns
 import org.jetbrains.kotlin.ir.expressions.IrConst
-import org.jetbrains.kotlin.ir.symbols.FqNameEqualityChecker
+import org.jetbrains.kotlin.ir.symbols.SignatureEqualityChecker
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrClassifierSymbol
 import org.jetbrains.kotlin.ir.symbols.IrTypeParameterSymbol
@@ -141,7 +141,7 @@ interface IrTypeSystemContext : TypeSystemContext, TypeSystemCommonSuperTypesCon
 
     override fun TypeParameterMarker.getTypeConstructor() = this as IrTypeParameterSymbol
 
-    override fun isEqualTypeConstructors(c1: TypeConstructorMarker, c2: TypeConstructorMarker) = FqNameEqualityChecker.areEqual(
+    override fun isEqualTypeConstructors(c1: TypeConstructorMarker, c2: TypeConstructorMarker) = SignatureEqualityChecker.areEqual(
         c1 as IrClassifierSymbol, c2 as IrClassifierSymbol
     )
 

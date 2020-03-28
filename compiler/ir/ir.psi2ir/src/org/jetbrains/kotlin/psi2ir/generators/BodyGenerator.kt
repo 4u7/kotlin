@@ -44,7 +44,7 @@ class BodyGenerator(
     override val context: GeneratorContext
 ) : GeneratorWithScope {
 
-    val scopeOwner: DeclarationDescriptor get() = scopeOwnerSymbol.descriptor
+    val scopeOwner: DeclarationDescriptor get() = scopeOwnerSymbol.trueDescriptor
 
     private val typeTranslator = context.typeTranslator
     private fun KotlinType.toIrType() = typeTranslator.translateType(this)

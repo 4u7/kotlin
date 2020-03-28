@@ -238,7 +238,7 @@ class IrTypeMapper(private val context: JvmBackendContext) : KotlinTypeMapperBas
         val arguments = type.arguments
 
         // TODO: get rid of descriptor here
-        val classDescriptor = classifier.descriptor
+        val classDescriptor = classifier.symbol.trueDescriptor
         if (classDescriptor is FunctionClassDescriptor) {
             if (classDescriptor.hasBigArity ||
                 classDescriptor.functionKind == FunctionClassDescriptor.Kind.KFunction ||

@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.types.KotlinType
 abstract class IrLazyDeclarationBase(
     startOffset: Int,
     endOffset: Int,
+    private val trueDescriptor: DeclarationDescriptor,
     override var origin: IrDeclarationOrigin,
     private val stubGenerator: DeclarationStubGenerator,
     protected val typeTranslator: TypeTranslator
@@ -50,7 +51,7 @@ abstract class IrLazyDeclarationBase(
     }
 
     override var annotations: List<IrConstructorCall> by lazyVar {
-        descriptor.annotations.mapNotNull(typeTranslator.constantValueGenerator::generateAnnotationConstructorCall).toMutableList()
+        trueDescriptor.annotations.mapNotNull(typeTranslator.constantValueGenerator::generateAnnotationConstructorCall).toMutableList()
     }
 
     override var metadata: Nothing?
@@ -58,7 +59,7 @@ abstract class IrLazyDeclarationBase(
         set(_) = error("We should never need to store metadata of external declarations.")
 
     private fun createLazyParent(): IrDeclarationParent? {
-        val currentDescriptor = descriptor
+        val currentDescriptor = trueDescriptor
 
         val containingDeclaration =
             ((currentDescriptor as? PropertyAccessorDescriptor)?.correspondingProperty ?: currentDescriptor).containingDeclaration
@@ -66,7 +67,7 @@ abstract class IrLazyDeclarationBase(
         return when (containingDeclaration) {
             is PackageFragmentDescriptor -> run {
                 val parent = this.takeUnless { it is IrClass }?.let {
-                    stubGenerator.generateOrGetFacadeClass(descriptor)
+                    stubGenerator.generateOrGetFacadeClass(trueDescriptor)
                 } ?: stubGenerator.generateOrGetEmptyExternalPackageFragmentStub(containingDeclaration)
                 parent.declarations.add(this)
                 parent

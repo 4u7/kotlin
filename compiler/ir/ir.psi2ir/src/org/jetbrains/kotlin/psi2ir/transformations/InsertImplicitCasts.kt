@@ -111,7 +111,7 @@ internal class InsertImplicitCasts(
     private fun KotlinType.toIrType() = typeTranslator.translateType(this)
 
     private val IrDeclarationReference.substitutedDescriptor
-        get() = callToSubstitutedDescriptorMap[this] ?: symbol.descriptor as CallableDescriptor
+        get() = callToSubstitutedDescriptorMap[this] ?: symbol.trueDescriptor as CallableDescriptor
 
     override fun visitCallableReference(expression: IrCallableReference): IrExpression {
         val substitutedDescriptor = expression.substitutedDescriptor
@@ -199,7 +199,7 @@ internal class InsertImplicitCasts(
             value = if (expression.returnTargetSymbol is IrConstructorSymbol) {
                 value.coerceToUnit(irBuiltIns)
             } else {
-                val returnTargetDescriptor = expression.returnTarget
+                val returnTargetDescriptor = expression.returnTargetSymbol.trueDescriptor
                 val isLambdaReturnValue = returnTargetDescriptor is AnonymousFunctionDescriptor
                 value.cast(returnTargetDescriptor.returnType, isLambdaReturnValue = isLambdaReturnValue)
             }
@@ -228,9 +228,11 @@ internal class InsertImplicitCasts(
         }
 
     override fun visitField(declaration: IrField): IrStatement {
-        return typeTranslator.withTypeErasure(declaration.correspondingPropertySymbol?.descriptor ?: declaration.descriptor) {
+        return typeTranslator.withTypeErasure(
+            declaration.correspondingPropertySymbol?.trueDescriptor ?: declaration.symbol.trueDescriptor
+        ) {
             declaration.transformPostfix {
-                initializer?.coerceInnerExpression(descriptor.type)
+                initializer?.coerceInnerExpression(symbol.trueDescriptor.type)
             }
         }
     }

@@ -54,7 +54,8 @@ abstract class IrFunctionBase<T : FunctionBaseCarrier<T>>(
     @Suppress("DEPRECATION")
     final override var returnType: IrType
         get() = returnTypeField.let {
-            if (it !== IrUninitializedType) it else error("Return type is not initialized")
+            if (it !== IrUninitializedType) it else
+                error("Return type is not initialized")
         }
         set(c) {
             returnTypeField = c

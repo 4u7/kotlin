@@ -158,7 +158,7 @@ fun IrSimpleFunction.isCompiledToJvmDefault(jvmDefaultMode: JvmDefaultMode): Boo
     }
     if (origin == IrDeclarationOrigin.IR_EXTERNAL_JAVA_DECLARATION_STUB) return false
     if (hasJvmDefault()) return true
-    val parentDescriptor = propertyIfAccessor.parentAsClass.descriptor
+    val parentDescriptor = propertyIfAccessor.parentAsClass.symbol.trueDescriptor
     if (parentDescriptor !is DeserializedClassDescriptor) return jvmDefaultMode.forAllMethodsWithBody
     return JvmProtoBufUtil.isNewPlaceForBodyGeneration(parentDescriptor.classProto)
 }

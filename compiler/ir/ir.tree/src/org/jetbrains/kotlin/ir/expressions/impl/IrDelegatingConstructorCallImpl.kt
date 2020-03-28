@@ -16,7 +16,6 @@
 
 package org.jetbrains.kotlin.ir.expressions.impl
 
-import org.jetbrains.kotlin.descriptors.ClassConstructorDescriptor
 import org.jetbrains.kotlin.ir.expressions.IrDelegatingConstructorCall
 import org.jetbrains.kotlin.ir.expressions.typeParametersCount
 import org.jetbrains.kotlin.ir.symbols.IrConstructorSymbol
@@ -45,7 +44,14 @@ class IrDelegatingConstructorCallImpl(
         endOffset: Int,
         type: IrType,
         symbol: IrConstructorSymbol
-    ) : this(startOffset, endOffset, type, symbol, symbol.descriptor.typeParametersCount, symbol.descriptor.valueParameters.size)
+    ) : this(
+        startOffset,
+        endOffset,
+        type,
+        symbol,
+        symbol.trueDescriptor.typeParametersCount,
+        symbol.trueDescriptor.valueParameters.size
+    )
 
     constructor(
         startOffset: Int,
@@ -53,7 +59,7 @@ class IrDelegatingConstructorCallImpl(
         type: IrType,
         symbol: IrConstructorSymbol,
         typeArgumentsCount: Int
-    ) : this(startOffset, endOffset, type, symbol, typeArgumentsCount, symbol.descriptor.valueParameters.size)
+    ) : this(startOffset, endOffset, type, symbol, typeArgumentsCount, symbol.trueDescriptor.valueParameters.size)
 
     override fun <R, D> accept(visitor: IrElementVisitor<R, D>, data: D): R {
         return visitor.visitDelegatingConstructorCall(this, data)

@@ -82,7 +82,7 @@ fun IrMemberAccessExpression.removeValueArgument(valueParameterDescriptor: Value
 
 inline fun <T : IrMemberAccessExpression> T.mapTypeParameters(transform: (TypeParameterDescriptor) -> IrType) : T =
     apply {
-        val descriptor = symbol.descriptor as CallableDescriptor
+        val descriptor = symbol.trueDescriptor as CallableDescriptor
         descriptor.typeParameters.forEach {
             putTypeArgument(it.index, transform(it))
         }
@@ -90,7 +90,7 @@ inline fun <T : IrMemberAccessExpression> T.mapTypeParameters(transform: (TypePa
 
 inline fun <T : IrMemberAccessExpression> T.mapValueParameters(transform: (ValueParameterDescriptor) -> IrExpression?): T =
     apply {
-        val descriptor = symbol.descriptor as CallableDescriptor
+        val descriptor = symbol.trueDescriptor as CallableDescriptor
         descriptor.valueParameters.forEach {
             putValueArgument(it.index, transform(it))
         }

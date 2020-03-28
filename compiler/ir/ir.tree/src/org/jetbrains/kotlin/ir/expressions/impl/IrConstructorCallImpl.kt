@@ -5,7 +5,6 @@
 
 package org.jetbrains.kotlin.ir.expressions.impl
 
-import org.jetbrains.kotlin.descriptors.ClassConstructorDescriptor
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
 import org.jetbrains.kotlin.ir.expressions.IrStatementOrigin
@@ -39,7 +38,9 @@ class IrConstructorCallImpl(
             constructorSymbol: IrConstructorSymbol,
             origin: IrStatementOrigin? = null
         ): IrConstructorCallImpl {
-            val constructorDescriptor = constructorSymbol.descriptor
+            // TODO !!!!!! This may be called from backend proper, not just from Psi2Ir,
+            // so initialDescriptor should not be accessed.
+            val constructorDescriptor = constructorSymbol.trueDescriptor
             val classTypeParametersCount = constructorDescriptor.constructedClass.original.declaredTypeParameters.size
             val totalTypeParametersCount = constructorDescriptor.typeParameters.size
             val valueParametersCount = constructorDescriptor.valueParameters.size

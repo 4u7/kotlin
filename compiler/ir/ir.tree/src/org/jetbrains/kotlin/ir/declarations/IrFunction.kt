@@ -49,7 +49,7 @@ fun IrFunction.getIrValueParameter(parameter: ValueParameterDescriptor): IrValue
     valueParameters.getOrElse(parameter.index) {
         throw AssertionError("No IrValueParameter for $parameter")
     }.also { found ->
-        assert(found.descriptor == parameter) {
+        assert(found.descriptor == parameter || found.symbol.trueDescriptor == parameter) {
             "Parameter indices mismatch at $descriptor: $parameter != ${found.descriptor}"
         }
     }

@@ -52,6 +52,9 @@ private class DescriptorlessIrFileSymbol : IrFileSymbol {
     override val descriptor: PackageFragmentDescriptor
         get() = error("Operation is unsupported")
 
+    override val trueDescriptor: PackageFragmentDescriptor
+        get() = error("Operation is unsupported")
+
     private var _owner: IrFile? = null
     override val owner get() = _owner!!
 

@@ -6,7 +6,7 @@
 package org.jetbrains.kotlin.ir.types.impl
 
 import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
-import org.jetbrains.kotlin.ir.symbols.FqNameEqualityChecker
+import org.jetbrains.kotlin.ir.symbols.SignatureEqualityChecker
 import org.jetbrains.kotlin.ir.symbols.IrClassifierSymbol
 import org.jetbrains.kotlin.ir.types.*
 import org.jetbrains.kotlin.types.KotlinType
@@ -31,12 +31,12 @@ class IrSimpleTypeImpl(
 
     override fun equals(other: Any?): Boolean =
         other is IrSimpleTypeImpl &&
-                FqNameEqualityChecker.areEqual(classifier, other.classifier) &&
+                SignatureEqualityChecker.areEqual(classifier, other.classifier) &&
                 hasQuestionMark == other.hasQuestionMark &&
                 arguments == other.arguments
 
     override fun hashCode(): Int =
-        (FqNameEqualityChecker.getHashCode(classifier) * 31 +
+        (SignatureEqualityChecker.getHashCode(classifier) * 31 +
                 hasQuestionMark.hashCode()) * 31 +
                 arguments.hashCode()
 }

@@ -6,12 +6,10 @@
 package org.jetbrains.kotlin.psi2ir.generators
 
 import org.jetbrains.kotlin.ir.IrElement
-import org.jetbrains.kotlin.ir.declarations.IrDeclaration
-import org.jetbrains.kotlin.ir.declarations.IrDeclarationOrigin
-import org.jetbrains.kotlin.ir.declarations.IrField
-import org.jetbrains.kotlin.ir.declarations.IrTypeParametersContainer
+import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.visitors.IrElementVisitorVoid
 import org.jetbrains.kotlin.ir.visitors.acceptChildrenVoid
+import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 class AnnotationGenerator(context: GeneratorContext) : IrElementVisitorVoid {
     private val typeTranslator = context.typeTranslator
@@ -37,8 +35,8 @@ class AnnotationGenerator(context: GeneratorContext) : IrElementVisitorVoid {
         // (see IrPropertyDelegateDescriptorImpl), but annotations on backing fields should be processed manually here
         val annotatedDescriptor =
             if (declaration is IrField && declaration.origin != IrDeclarationOrigin.PROPERTY_DELEGATE)
-                declaration.descriptor.backingField
-            else declaration.descriptor
+                declaration.symbol.trueDescriptor.backingField
+            else declaration.safeAs<IrSymbolOwner>()?.symbol?.trueDescriptor ?: declaration.descriptor
 
         if (annotatedDescriptor != null) {
             declaration.annotations += annotatedDescriptor.annotations.mapNotNull {
