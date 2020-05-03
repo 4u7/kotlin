@@ -558,7 +558,7 @@ abstract class KotlinIrLinker(
         if (!symbol.isBound) return null
 
         //assert(symbol.isBound) {
-        //    "getDeclaration: symbol $symbol is unbound, descriptor = ${symbol.descriptor}, signature = ${symbol.signature}"
+        //    "getDeclaration: symbol $symbol is unbound, descriptor = ${symbol.trueDescriptor}, signature = ${symbol.signature}"
         //}
 
         return symbol.owner as IrDeclaration

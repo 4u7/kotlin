@@ -156,7 +156,7 @@ open class SymbolTable(
             assert(d0 === d) {
                 "Non-original descriptor in declaration: $d\n\tExpected: $d0"
             }
-            val d1: D = (d0 as? WrappedDeclarationDescriptor<*>)?.owner?.safeAs<IrSymbolOwner>()?.symbol?.trueDescriptor as? D
+            val d1: D = (d0 as? WrappedDeclarationDescriptor<*>)?.takeIf { it.isBound() }?.owner?.safeAs<IrSymbolOwner>()?.symbol?.trueDescriptor as? D
                 ?: d0
             val s = get(d1)
             if (s == null) {

@@ -62,12 +62,12 @@ class JsIrBackendContext(
     val externalDeclarations = hashSetOf<IrDeclaration>()
     val bodilessBuiltInsPackageFragment: IrPackageFragment = run {
 
-        class DescriptorlessExternalPackageFragmentSymbol : IrExternalPackageFragmentSymbol {
+        class BodilessExternalPackageFragmentSymbol : IrExternalPackageFragmentSymbol {
             override val descriptor: PackageFragmentDescriptor
-                get() = error("Operation is unsupported")
+                get() = irBuiltIns.packageFragment.packageFragmentDescriptor
 
             override val trueDescriptor: PackageFragmentDescriptor
-                get() = error("Operation is unsupported")
+                get() = irBuiltIns.packageFragment.packageFragmentDescriptor
 
             private var _owner: IrExternalPackageFragment? = null
             override val owner get() = _owner!!
@@ -86,7 +86,7 @@ class JsIrBackendContext(
         }
 
         IrExternalPackageFragmentImpl(
-            DescriptorlessExternalPackageFragmentSymbol(),
+            BodilessExternalPackageFragmentSymbol(),
             FqName("kotlin")
         )
     }

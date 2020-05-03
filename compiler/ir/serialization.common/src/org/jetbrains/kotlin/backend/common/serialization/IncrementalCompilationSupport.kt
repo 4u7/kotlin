@@ -117,7 +117,7 @@ class CurrentModuleWithICDeserializer(
     override fun init(delegate: IrModuleDeserializer) {
         val knownBuiltIns = irBuiltIns.knownBuiltins.map { (it as IrSymbolOwner).symbol }.toSet()
         symbolTable.forEachPublicSymbol {
-            if (it.descriptor.isDirtyDescriptor()) { // public && non-deserialized should be dirty symbol
+            if (it.trueDescriptor.isDirtyDescriptor()) { // public && non-deserialized should be dirty symbol
                 if (it !in knownBuiltIns) {
                     dirtyDeclarations[it.signature] = it
                 }
