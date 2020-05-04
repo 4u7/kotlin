@@ -70,16 +70,16 @@ class DeclarationStubGenerator(
 
     override fun getDeclaration(symbol: IrSymbol): IrDeclaration? {
         // Special case: generating field for an already generated property.
-        if (symbol is IrFieldSymbol && (symbol.descriptor as? WrappedPropertyDescriptor)?.isBound() == true) {
-            return generateStubBySymbol(symbol, symbol.descriptor)
+        if (symbol is IrFieldSymbol && (symbol.trueDescriptor as? WrappedPropertyDescriptor)?.isBound() == true) {
+            return generateStubBySymbol(symbol, symbol.trueDescriptor)
         }
-        val descriptor = if (symbol.descriptor is WrappedDeclarationDescriptor<*>)
+        val descriptor = if (symbol.trueDescriptor is WrappedDeclarationDescriptor<*>)
             findDescriptorBySignature(symbol.signature)
         else
-            symbol.descriptor
+            symbol.trueDescriptor
         if (descriptor == null) return null
         return generateStubBySymbol(symbol, descriptor).also {
-            symbol.descriptor.bind(it)
+            symbol.trueDescriptor.bind(it)
         }
     }
 
