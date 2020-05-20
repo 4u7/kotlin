@@ -33,7 +33,7 @@ abstract class IrSymbolBase<out D : DeclarationDescriptor>(override val trueDesc
 
 abstract class IrBindableSymbolBase<out D : DeclarationDescriptor, B : IrSymbolOwner>(
     initialDescriptor: D,
-    doWrapDescriptor: (D) -> D? = { null }
+    doWrapDescriptor: ((D) -> D)? = null
 ) :
     IrBindableSymbol<D, B>, IrSymbolBase<D>(initialDescriptor) {
 
@@ -55,8 +55,11 @@ abstract class IrBindableSymbolBase<out D : DeclarationDescriptor, B : IrSymbolO
                 descriptor is ValueParameterDescriptor && isOriginalDescriptor(descriptor.containingDeclaration) ||
                 descriptor == descriptor.original
 
-    override val descriptor: D =
-        initialDescriptor as? WrappedDeclarationDescriptor<*> as? D ?: doWrapDescriptor(initialDescriptor) ?: initialDescriptor
+    override val descriptor: D = when {
+        initialDescriptor is WrappedDeclarationDescriptor<*> -> initialDescriptor
+        doWrapDescriptor != null -> doWrapDescriptor(initialDescriptor)
+        else -> initialDescriptor
+    }
 
     private var _owner: B? = null
     override val owner: B

@@ -23,8 +23,10 @@ abstract class IrPublicSymbolBase<out D : DeclarationDescriptor>(
     }
 }
 
-abstract class IrBindablePublicSymbolBase<out D : DeclarationDescriptor, B : IrSymbolOwner>
-    (initialDescriptor: D, sig: IdSignature, doWrapDescriptor: (D) -> D? = { null }
+abstract class IrBindablePublicSymbolBase<out D : DeclarationDescriptor, B : IrSymbolOwner>(
+    initialDescriptor: D,
+    sig: IdSignature,
+    doWrapDescriptor: ((D) -> D)? = null
 ) : IrBindableSymbol<D, B>, IrPublicSymbolBase<D>(initialDescriptor, sig) {
 
     init {
@@ -34,8 +36,11 @@ abstract class IrBindablePublicSymbolBase<out D : DeclarationDescriptor, B : IrS
         assert(sig.isPublic)
     }
 
-    override val descriptor: D =
-        initialDescriptor as? WrappedDeclarationDescriptor<*> as? D ?: doWrapDescriptor(initialDescriptor) ?: initialDescriptor
+    override val descriptor: D = when {
+        initialDescriptor is WrappedDeclarationDescriptor<*> -> initialDescriptor
+        doWrapDescriptor != null -> doWrapDescriptor(initialDescriptor)
+        else -> initialDescriptor
+    }
 
     private fun isOriginalDescriptor(descriptor: DeclarationDescriptor): Boolean =
         descriptor is WrappedDeclarationDescriptor<*> ||
