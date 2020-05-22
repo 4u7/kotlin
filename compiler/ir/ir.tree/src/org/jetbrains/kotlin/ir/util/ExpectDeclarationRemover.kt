@@ -76,7 +76,7 @@ class ExpectDeclarationRemover(val symbolTable: ReferenceSymbolTable, private va
             return
         }
 
-        if (!function.symbol.initialDescriptor.isActual) return
+        if (!function.initialDescriptor.isActual) return
 
         val index = declaration.index
 

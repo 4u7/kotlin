@@ -22,7 +22,7 @@ import org.jetbrains.kotlin.name.Name
 abstract class IrLazyFunctionBase(
     startOffset: Int,
     endOffset: Int,
-    initialDescriptor: FunctionDescriptor,
+    _initialDescriptor: FunctionDescriptor,
     origin: IrDeclarationOrigin,
     override val name: Name,
     override var visibility: Visibility,
@@ -32,27 +32,29 @@ abstract class IrLazyFunctionBase(
     stubGenerator: DeclarationStubGenerator,
     typeTranslator: TypeTranslator
 ) :
-    IrLazyDeclarationBase(startOffset, endOffset, initialDescriptor, origin, stubGenerator, typeTranslator),
+    IrLazyDeclarationBase(startOffset, endOffset, _initialDescriptor, origin, stubGenerator, typeTranslator),
     IrFunction {
 
+    override val initialDescriptor: FunctionDescriptor get() = symbol.initialDescriptor
+
     val initialSignatureFunction: IrFunction? by lazyVar {
-        initialDescriptor.initialSignatureDescriptor?.takeIf { it != initialDescriptor }?.original?.let(stubGenerator::generateFunctionStub)
+        _initialDescriptor.initialSignatureDescriptor?.takeIf { it != _initialDescriptor }?.original?.let(stubGenerator::generateFunctionStub)
     }
 
     override var dispatchReceiverParameter: IrValueParameter? by lazyVar {
         typeTranslator.buildWithScope(this) {
-            initialDescriptor.dispatchReceiverParameter?.generateReceiverParameterStub()?.also { it.parent = this@IrLazyFunctionBase }
+            _initialDescriptor.dispatchReceiverParameter?.generateReceiverParameterStub()?.also { it.parent = this@IrLazyFunctionBase }
         }
     }
     override var extensionReceiverParameter: IrValueParameter? by lazyVar {
         typeTranslator.buildWithScope(this) {
-            initialDescriptor.extensionReceiverParameter?.generateReceiverParameterStub()?.also { it.parent = this@IrLazyFunctionBase }
+            _initialDescriptor.extensionReceiverParameter?.generateReceiverParameterStub()?.also { it.parent = this@IrLazyFunctionBase }
         }
     }
 
     override var valueParameters: List<IrValueParameter> by lazyVar {
         typeTranslator.buildWithScope(this) {
-            initialDescriptor.valueParameters.mapTo(arrayListOf()) {
+            _initialDescriptor.valueParameters.mapTo(arrayListOf()) {
                 stubGenerator.generateValueParameterStub(it).apply { parent = this@IrLazyFunctionBase }
             }
         }
@@ -62,7 +64,7 @@ abstract class IrLazyFunctionBase(
 
     final override var returnType: IrType by lazyVar {
         typeTranslator.buildWithScope(this) {
-            initialDescriptor.returnType!!.toIrType()
+            _initialDescriptor.returnType!!.toIrType()
         }
     }
 

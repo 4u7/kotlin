@@ -19,7 +19,7 @@ import org.jetbrains.kotlin.types.KotlinType
 abstract class IrLazyDeclarationBase(
     startOffset: Int,
     endOffset: Int,
-    private val initialDescriptor: DeclarationDescriptor,
+    override val initialDescriptor: DeclarationDescriptor,
     override var origin: IrDeclarationOrigin,
     private val stubGenerator: DeclarationStubGenerator,
     protected val typeTranslator: TypeTranslator

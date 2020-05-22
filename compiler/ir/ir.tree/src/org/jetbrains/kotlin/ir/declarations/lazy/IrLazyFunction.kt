@@ -23,7 +23,7 @@ class IrLazyFunction(
     endOffset: Int,
     origin: IrDeclarationOrigin,
     override val symbol: IrSimpleFunctionSymbol,
-    initialDescriptor: FunctionDescriptor,
+    _initialDescriptor: FunctionDescriptor,
     name: Name,
     visibility: Visibility,
     override val modality: Modality,
@@ -38,18 +38,19 @@ class IrLazyFunction(
     typeTranslator: TypeTranslator
 ) :
     IrLazyFunctionBase(
-        startOffset, endOffset, initialDescriptor, origin, name, visibility, isInline, isExternal, isExpect, stubGenerator, typeTranslator
+        startOffset, endOffset, _initialDescriptor, origin, name, visibility, isInline, isExternal, isExpect, stubGenerator, typeTranslator
     ),
     IrSimpleFunction {
 
     override val descriptor get() = symbol.descriptor
+    override val initialDescriptor get() = symbol.initialDescriptor
 
     override var typeParameters: List<IrTypeParameter> by lazyVar {
         typeTranslator.buildWithScope(this) {
-            stubGenerator.symbolTable.withScope(initialDescriptor) {
-                val propertyIfAccessor = initialDescriptor.propertyIfAccessor
+            stubGenerator.symbolTable.withScope(_initialDescriptor) {
+                val propertyIfAccessor = _initialDescriptor.propertyIfAccessor
                 propertyIfAccessor.typeParameters.mapTo(arrayListOf()) { typeParameterDescriptor ->
-                    if (initialDescriptor != propertyIfAccessor) {
+                    if (_initialDescriptor != propertyIfAccessor) {
                         stubGenerator.generateOrGetScopedTypeParameterStub(typeParameterDescriptor).also { irTypeParameter ->
                             irTypeParameter.parent = this@IrLazyFunction
                         }
@@ -63,7 +64,7 @@ class IrLazyFunction(
 
 
     override var overriddenSymbols: List<IrSimpleFunctionSymbol> by lazyVar {
-        initialDescriptor.overriddenDescriptors.mapTo(arrayListOf()) {
+        _initialDescriptor.overriddenDescriptors.mapTo(arrayListOf()) {
             stubGenerator.generateFunctionStub(it.original).symbol
         }
     }

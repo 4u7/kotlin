@@ -984,7 +984,7 @@ abstract class IrFileDeserializer(val logger: LoggingContext, val builtIns: IrBu
             }
         }
 
-        (result.symbol.initialDescriptor as? WrappedTypeParameterDescriptor)?.bind(result)
+        (result.initialDescriptor as? WrappedTypeParameterDescriptor)?.bind(result)
 
         // make sure this symbol is known to linker
         referenceIrSymbol(result.symbol, sig)
@@ -1304,8 +1304,8 @@ abstract class IrFileDeserializer(val logger: LoggingContext, val builtIns: IrBu
                         // Unfortunately symbol deserialization doesn't know anything about that.
                         // So we can end up with two wrapped property descriptors for property and its field.
                         // In that case we need to bind the field's one here.
-                        if (symbol.initialDescriptor != it.symbol.initialDescriptor)
-                            (it.symbol.initialDescriptor as? WrappedPropertyDescriptor)?.bind(this)
+                        if (symbol.initialDescriptor != it.initialDescriptor)
+                            (it.initialDescriptor as? WrappedPropertyDescriptor)?.bind(this)
                         it.correspondingPropertySymbol = symbol
                     }
                 }

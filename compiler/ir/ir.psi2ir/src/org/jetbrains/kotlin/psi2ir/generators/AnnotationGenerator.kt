@@ -35,8 +35,8 @@ class AnnotationGenerator(context: GeneratorContext) : IrElementVisitorVoid {
         // (see IrPropertyDelegateDescriptorImpl), but annotations on backing fields should be processed manually here
         val annotatedDescriptor =
             if (declaration is IrField && declaration.origin != IrDeclarationOrigin.PROPERTY_DELEGATE)
-                declaration.symbol.initialDescriptor.backingField
-            else declaration.safeAs<IrSymbolOwner>()?.symbol?.initialDescriptor ?: declaration.descriptor
+                declaration.initialDescriptor.backingField
+            else declaration.initialDescriptor
 
         if (annotatedDescriptor != null) {
             declaration.annotations += annotatedDescriptor.annotations.mapNotNull {

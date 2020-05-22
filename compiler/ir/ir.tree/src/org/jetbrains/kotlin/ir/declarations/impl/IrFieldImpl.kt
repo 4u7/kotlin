@@ -70,6 +70,7 @@ class IrFieldImpl(
     }
 
     override val descriptor: PropertyDescriptor get() = symbol.descriptor
+    override val initialDescriptor: PropertyDescriptor get() = symbol.initialDescriptor
 
     override var initializerField: IrExpressionBody? = null
 

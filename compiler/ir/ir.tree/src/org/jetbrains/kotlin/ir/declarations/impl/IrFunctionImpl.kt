@@ -128,6 +128,7 @@ class IrFunctionImpl(
     )
 
     override val descriptor: FunctionDescriptor get() = symbol.descriptor
+    override val initialDescriptor: FunctionDescriptor get() = symbol.initialDescriptor
 
     init {
         symbol.bind(this)
@@ -162,6 +163,8 @@ class IrFakeOverrideFunctionImpl(
 
     override val descriptor get() =
         _symbol?.descriptor ?: WrappedSimpleFunctionDescriptor()
+    override val initialDescriptor: FunctionDescriptor get() =
+        _symbol?.initialDescriptor ?: WrappedSimpleFunctionDescriptor()
 
     fun acquireSymbol(symbol: IrSimpleFunctionSymbol) {
         assert(_symbol == null) { "$this already has symbol _symbol" }

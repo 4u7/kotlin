@@ -71,6 +71,7 @@ class IrConstructorImpl(
     }
 
     override val descriptor: ClassConstructorDescriptor get() = symbol.descriptor
+    override val initialDescriptor: ClassConstructorDescriptor get() = symbol.initialDescriptor
 
     override fun <R, D> accept(visitor: IrElementVisitor<R, D>, data: D): R =
         visitor.visitConstructor(this, data)

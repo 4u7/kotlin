@@ -28,6 +28,7 @@ class IrErrorDeclarationImpl(
     endOffset: Int,
     override val descriptor: DeclarationDescriptor
 ) : IrDeclarationBase<ErrorCarrier>(startOffset, endOffset, IrDeclarationOrigin.DEFINED), IrErrorDeclaration, ErrorCarrier {
+    override val initialDescriptor get() = descriptor
 
     override fun <R, D> accept(visitor: IrElementVisitor<R, D>, data: D): R {
         return visitor.visitErrorDeclaration(this, data)

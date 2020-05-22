@@ -39,6 +39,9 @@ class IrTypeAliasImpl(
     override val descriptor: TypeAliasDescriptor
         get() = symbol.descriptor
 
+    override val initialDescriptor: TypeAliasDescriptor
+        get() = symbol.initialDescriptor
+
     override var typeParametersField: List<IrTypeParameter> = emptyList()
 
     override var typeParameters: List<IrTypeParameter>

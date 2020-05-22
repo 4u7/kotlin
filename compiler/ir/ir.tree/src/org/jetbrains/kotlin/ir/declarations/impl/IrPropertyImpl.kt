@@ -215,6 +215,7 @@ class IrPropertyImpl(
         symbol.bind(this)
     }
     override val descriptor: PropertyDescriptor = symbol.descriptor
+    override val initialDescriptor: PropertyDescriptor get() = symbol.initialDescriptor
 }
 
 class IrFakeOverridePropertyImpl(
@@ -240,6 +241,8 @@ class IrFakeOverridePropertyImpl(
 
     override val descriptor get() =
         _symbol?.descriptor ?: WrappedPropertyDescriptor()
+    override val initialDescriptor get() =
+        _symbol?.initialDescriptor ?: WrappedPropertyDescriptor()
 
     fun acquireSymbol(symbol: IrPropertySymbol) {
         assert(_symbol == null) { "$this already has symbol _symbol" }

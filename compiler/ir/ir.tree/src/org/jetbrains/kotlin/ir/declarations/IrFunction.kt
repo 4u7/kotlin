@@ -27,6 +27,7 @@ interface IrFunction :
     IrDeclarationWithName, IrDeclarationWithVisibility, IrTypeParametersContainer, IrSymbolOwner, IrDeclarationParent, IrReturnTarget {
 
     override val descriptor: FunctionDescriptor
+    override val initialDescriptor: FunctionDescriptor
     override val symbol: IrFunctionSymbol
 
     val isInline: Boolean // NB: there's an inline constructor for Array and each primitive array class

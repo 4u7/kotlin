@@ -47,6 +47,9 @@ class IrLocalDelegatedPropertyImpl(
     override val descriptor: VariableDescriptorWithAccessors
         get() = symbol.descriptor
 
+    override val initialDescriptor: VariableDescriptorWithAccessors
+        get() = symbol.initialDescriptor
+
     override var delegateField: IrVariable? = null
 
     override var delegate: IrVariable

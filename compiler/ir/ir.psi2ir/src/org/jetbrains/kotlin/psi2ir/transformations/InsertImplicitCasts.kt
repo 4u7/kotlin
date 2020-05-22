@@ -229,10 +229,10 @@ internal class InsertImplicitCasts(
 
     override fun visitField(declaration: IrField): IrStatement {
         return typeTranslator.withTypeErasure(
-            declaration.correspondingPropertySymbol?.initialDescriptor ?: declaration.symbol.initialDescriptor
+            declaration.correspondingPropertySymbol?.initialDescriptor ?: declaration.initialDescriptor
         ) {
             declaration.transformPostfix {
-                initializer?.coerceInnerExpression(symbol.initialDescriptor.type)
+                initializer?.coerceInnerExpression(initialDescriptor.type)
             }
         }
     }

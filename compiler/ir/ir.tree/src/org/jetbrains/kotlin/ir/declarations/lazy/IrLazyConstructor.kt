@@ -22,7 +22,7 @@ class IrLazyConstructor(
     endOffset: Int,
     origin: IrDeclarationOrigin,
     override val symbol: IrConstructorSymbol,
-    initialDescriptor: ClassConstructorDescriptor,
+    _initialDescriptor: ClassConstructorDescriptor,
     name: Name,
     visibility: Visibility,
     isInline: Boolean,
@@ -33,19 +33,20 @@ class IrLazyConstructor(
     typeTranslator: TypeTranslator
 ) :
     IrLazyFunctionBase(
-        startOffset, endOffset, initialDescriptor, origin, name,
+        startOffset, endOffset, _initialDescriptor, origin, name,
         visibility, isInline, isExternal, isExpect,
         stubGenerator, typeTranslator
     ),
     IrConstructor {
 
     override val descriptor get() = symbol.descriptor
+    override val initialDescriptor get() = symbol.initialDescriptor
 
     override var typeParameters: List<IrTypeParameter> by lazyVar {
         typeTranslator.buildWithScope(this) {
-            stubGenerator.symbolTable.withScope(initialDescriptor) {
-                val classTypeParametersCount = initialDescriptor.constructedClass.original.declaredTypeParameters.size
-                val allConstructorTypeParameters = initialDescriptor.typeParameters
+            stubGenerator.symbolTable.withScope(_initialDescriptor) {
+                val classTypeParametersCount = _initialDescriptor.constructedClass.original.declaredTypeParameters.size
+                val allConstructorTypeParameters = _initialDescriptor.typeParameters
                 allConstructorTypeParameters.subList(classTypeParametersCount, allConstructorTypeParameters.size).mapTo(ArrayList()) {
                     stubGenerator.generateOrGetTypeParameterStub(it)
                 }

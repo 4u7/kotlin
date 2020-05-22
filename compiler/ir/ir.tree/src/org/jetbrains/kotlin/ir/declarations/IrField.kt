@@ -16,6 +16,7 @@ interface IrField :
     IrDeclarationWithName, IrDeclarationWithVisibility, IrDeclarationParent {
 
     override val descriptor: PropertyDescriptor
+    override val initialDescriptor: PropertyDescriptor
 
     val type: IrType
     val isFinal: Boolean

@@ -82,6 +82,7 @@ class IrBuiltInOperator(
     override var correspondingPropertySymbol: IrPropertySymbol? by NullValueDelegate()
 
     override val descriptor: FunctionDescriptor get() = symbol.descriptor
+    override val initialDescriptor: FunctionDescriptor get() = symbol.initialDescriptor
 
     override fun <R, D> accept(visitor: IrElementVisitor<R, D>, data: D): R {
         return visitor.visitSimpleFunction(this, data)
@@ -107,6 +108,7 @@ class IrBuiltInOperatorValueParameter(override val symbol: IrValueParameterSymbo
     IrValueParameter, IrBuiltInOperatorBase() {
 
     override val descriptor: ParameterDescriptor get() = symbol.descriptor
+    override val initialDescriptor: ParameterDescriptor get() = symbol.initialDescriptor
     override val varargElementType: IrType? get() = null
     override val isCrossinline: Boolean get() = false
     override val isNoinline: Boolean get() = false
@@ -134,6 +136,7 @@ class IrBuiltInOperatorTypeParameter(
 ) : IrTypeParameter, IrBuiltInOperatorBase() {
 
     override val descriptor: TypeParameterDescriptor get() = symbol.descriptor
+    override val initialDescriptor: TypeParameterDescriptor get() = symbol.initialDescriptor
     override val superTypes: MutableList<IrType> = SmartList()
     override val name: Name = Name.identifier("T$index")
 

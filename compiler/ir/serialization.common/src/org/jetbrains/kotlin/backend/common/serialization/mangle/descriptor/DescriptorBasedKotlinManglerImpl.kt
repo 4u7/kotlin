@@ -45,8 +45,8 @@ class Ir2DescriptorManglerAdapter(private val delegate: DescriptorBasedKotlinMan
     override fun IrDeclaration.isExported(): Boolean {
         return when (this) {
             is IrAnonymousInitializer -> false
-            is IrEnumEntry -> delegate.run { symbol.initialDescriptor.isExportEnumEntry() }
-            is IrField -> delegate.run { symbol.initialDescriptor.isExportField() }
+            is IrEnumEntry -> delegate.run { initialDescriptor.isExportEnumEntry() }
+            is IrField -> delegate.run { initialDescriptor.isExportField() }
             else -> delegate.run { initialDescriptor.isExported() }
         }
     }
@@ -54,8 +54,8 @@ class Ir2DescriptorManglerAdapter(private val delegate: DescriptorBasedKotlinMan
     override val IrDeclaration.mangleString: String
         get() {
             return when (this) {
-                is IrEnumEntry -> delegate.run { symbol.initialDescriptor.mangleEnumEntryString() }
-                is IrField -> delegate.run { symbol.initialDescriptor.mangleFieldString() }
+                is IrEnumEntry -> delegate.run { initialDescriptor.mangleEnumEntryString() }
+                is IrField -> delegate.run { initialDescriptor.mangleFieldString() }
                 else -> delegate.run { initialDescriptor.mangleString }
             }
         }
@@ -69,6 +69,4 @@ class Ir2DescriptorManglerAdapter(private val delegate: DescriptorBasedKotlinMan
     override fun getExportChecker() = error("Should not have been reached")
 
     override fun getMangleComputer(mode: MangleMode): KotlinMangleComputer<IrDeclaration> = error("Should not have been reached")
-
-    private val IrDeclaration.initialDescriptor get() = (this as? IrSymbolOwner)?.symbol?.initialDescriptor ?: descriptor
 }

@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.ir.types.IrType
 
 interface IrValueDeclaration : IrDeclarationWithName, IrSymbolOwner {
     override val descriptor: ValueDescriptor
+    override val initialDescriptor: ValueDescriptor
     override val symbol: IrValueSymbol
 
     val type: IrType

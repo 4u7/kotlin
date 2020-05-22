@@ -37,6 +37,9 @@ interface IrDeclaration : IrStatement, IrMutableAnnotationContainer, IrMetadataS
     @Deprecated("Please use IR declaration properties and not its descriptor properties")
     val descriptor: DeclarationDescriptor
 
+    @Deprecated("Please use IR declaration properties and not its descriptor properties")
+    val initialDescriptor: DeclarationDescriptor
+
     var origin: IrDeclarationOrigin
 
     var parent: IrDeclarationParent

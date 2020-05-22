@@ -28,6 +28,7 @@ interface IrProperty :
     IrSymbolOwner {
 
     override val descriptor: PropertyDescriptor
+    override val initialDescriptor: PropertyDescriptor
     override val symbol: IrPropertySymbol
 
     val isVar: Boolean

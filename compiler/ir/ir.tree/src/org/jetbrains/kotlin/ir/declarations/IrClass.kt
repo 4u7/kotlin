@@ -28,6 +28,7 @@ interface IrClass :
     IrDeclarationContainer, IrTypeParametersContainer, IrAttributeContainer {
 
     override val descriptor: ClassDescriptor
+    override val initialDescriptor: ClassDescriptor
 
     override var visibility: Visibility
 

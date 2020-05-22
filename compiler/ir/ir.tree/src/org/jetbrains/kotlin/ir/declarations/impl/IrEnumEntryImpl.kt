@@ -43,6 +43,7 @@ class IrEnumEntryImpl(
     }
 
     override val descriptor: ClassDescriptor get() = symbol.descriptor
+    override val initialDescriptor: ClassDescriptor get() = symbol.initialDescriptor
 
     override var correspondingClassField: IrClass? = null
 
