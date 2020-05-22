@@ -43,7 +43,7 @@ abstract class DataClassMembersGenerator(
 
     inline fun <T : IrDeclaration> T.buildWithScope(builder: (T) -> Unit): T =
         also { irDeclaration ->
-            symbolTable.withScope(irDeclaration.safeAs<IrSymbolOwner>()!!.symbol.trueDescriptor) {
+            symbolTable.withScope(irDeclaration.safeAs<IrSymbolOwner>()!!.symbol.initialDescriptor) {
                 builder(irDeclaration)
             }
         }
@@ -173,18 +173,18 @@ abstract class DataClassMembersGenerator(
             }
 
             return irCall(hashCodeFunctionSymbol, context.irBuiltIns.intType).apply {
-                if (hashCodeFunctionSymbol.trueDescriptor.dispatchReceiverParameter != null) {
+                if (hashCodeFunctionSymbol.initialDescriptor.dispatchReceiverParameter != null) {
                     dispatchReceiver = irValue
                 } else {
                     putValueArgument(0, irValue)
                 }
-                commitSubstituted(this, substituted ?: hashCodeFunctionSymbol.trueDescriptor)
+                commitSubstituted(this, substituted ?: hashCodeFunctionSymbol.initialDescriptor)
             }
         }
 
         fun generateToStringMethodBody(properties: List<PropertyDescriptor>) {
             val irConcat = irConcat()
-            irConcat.addArgument(irString(irClass.symbol.trueDescriptor.name.asString() + "("))
+            irConcat.addArgument(irString(irClass.symbol.initialDescriptor.name.asString() + "("))
             var first = true
             for (property in properties) {
                 if (!first) irConcat.addArgument(irString(", "))
@@ -213,7 +213,7 @@ abstract class DataClassMembersGenerator(
     }
 
     fun getBackingField(property: PropertyDescriptor): IrField =
-        irClass.properties.single { it.symbol.trueDescriptor == property }.backingField!!
+        irClass.properties.single { it.symbol.initialDescriptor == property }.backingField!!
 
     abstract fun declareSimpleFunction(startOffset: Int, endOffset: Int, functionDescriptor: FunctionDescriptor): IrFunction
 

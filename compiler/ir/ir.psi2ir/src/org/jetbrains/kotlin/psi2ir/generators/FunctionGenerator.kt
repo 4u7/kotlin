@@ -91,7 +91,7 @@ class FunctionGenerator(declarationGenerator: DeclarationGenerator) : Declaratio
         ktParameterOwner: KtPureElement?,
         ktReceiverParameterElement: KtElement?
     ) {
-        val descriptor = irFunction.symbol.trueDescriptor
+        val descriptor = irFunction.symbol.initialDescriptor
         declarationGenerator.generateScopedTypeParameterDeclarations(irFunction, descriptor.propertyIfAccessor.typeParameters)
         irFunction.returnType = descriptor.returnType!!.toIrType()
         generateValueParameterDeclarations(irFunction, ktParameterOwner, ktReceiverParameterElement)
@@ -108,7 +108,7 @@ class FunctionGenerator(declarationGenerator: DeclarationGenerator) : Declaratio
             if (ktAccessor != null && ktAccessor.hasBody()) IrDeclarationOrigin.DEFINED else IrDeclarationOrigin.DEFAULT_PROPERTY_ACCESSOR
         ).buildWithScope { irAccessor ->
             declarationGenerator.generateScopedTypeParameterDeclarations(irAccessor, descriptor.correspondingProperty.typeParameters)
-            irAccessor.returnType = irAccessor.symbol.trueDescriptor.returnType!!.toIrType()
+            irAccessor.returnType = irAccessor.symbol.initialDescriptor.returnType!!.toIrType()
             generateValueParameterDeclarations(irAccessor, ktAccessor ?: ktProperty, ktProperty.receiverTypeReference)
             val ktBodyExpression = ktAccessor?.bodyExpression
             irAccessor.body =
@@ -271,7 +271,7 @@ class FunctionGenerator(declarationGenerator: DeclarationGenerator) : Declaratio
     }
 
     fun generateSyntheticFunctionParameterDeclarations(irFunction: IrFunction) {
-        val descriptor = irFunction.symbol.trueDescriptor
+        val descriptor = irFunction.symbol.initialDescriptor
         val typeParameters =
             if (descriptor is PropertyAccessorDescriptor)
                 descriptor.correspondingProperty.typeParameters
@@ -287,7 +287,7 @@ class FunctionGenerator(declarationGenerator: DeclarationGenerator) : Declaratio
         ktReceiverParameterElement: KtPureElement?,
         withDefaultValues: Boolean = true
     ) {
-        val functionDescriptor = irFunction.symbol.trueDescriptor
+        val functionDescriptor = irFunction.symbol.initialDescriptor
 
         irFunction.dispatchReceiverParameter = functionDescriptor.dispatchReceiverParameter?.let {
             generateReceiverParameterDeclaration(it, ktParameterOwner, irFunction)

@@ -139,7 +139,7 @@ class DeclarationGenerator(override val context: GeneratorContext) : Generator {
         }
 
         for (irTypeParameter in irTypeParametersOwner.typeParameters) {
-            irTypeParameter.symbol.trueDescriptor.upperBounds.mapTo(irTypeParameter.superTypes) {
+            irTypeParameter.symbol.initialDescriptor.upperBounds.mapTo(irTypeParameter.superTypes) {
                 it.toIrType()
             }
         }
@@ -174,7 +174,7 @@ abstract class DeclarationGeneratorExtension(val declarationGenerator: Declarati
 
     inline fun <T : IrDeclaration> T.buildWithScope(builder: (T) -> Unit): T =
         also { irDeclaration ->
-            context.symbolTable.withScope((irDeclaration as IrSymbolOwner).symbol.trueDescriptor) {
+            context.symbolTable.withScope((irDeclaration as IrSymbolOwner).symbol.initialDescriptor) {
                 builder(irDeclaration)
             }
         }

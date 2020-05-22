@@ -26,7 +26,7 @@ class IrLazyProperty(
     endOffset: Int,
     origin: IrDeclarationOrigin,
     override val symbol: IrPropertySymbol,
-    trueDescriptor: PropertyDescriptor,
+    initialDescriptor: PropertyDescriptor,
     override val name: Name,
     override val visibility: Visibility,
     override val modality: Modality,
@@ -41,7 +41,7 @@ class IrLazyProperty(
     typeTranslator: TypeTranslator,
     bindingContext: BindingContext? = null
 ) :
-    IrLazyDeclarationBase(startOffset, endOffset, trueDescriptor, origin, stubGenerator, typeTranslator),
+    IrLazyDeclarationBase(startOffset, endOffset, initialDescriptor, origin, stubGenerator, typeTranslator),
     IrProperty {
 
     init {
@@ -51,22 +51,22 @@ class IrLazyProperty(
     override val descriptor = symbol.descriptor
 
     private val hasBackingField: Boolean =
-        trueDescriptor.hasBackingField(bindingContext) || stubGenerator.extensions.isPropertyWithPlatformField(trueDescriptor)
+        initialDescriptor.hasBackingField(bindingContext) || stubGenerator.extensions.isPropertyWithPlatformField(initialDescriptor)
 
     override var backingField: IrField? by lazyVar {
         if (hasBackingField) {
-            stubGenerator.generateFieldStub(trueDescriptor).apply {
+            stubGenerator.generateFieldStub(initialDescriptor).apply {
                 correspondingPropertySymbol = this@IrLazyProperty.symbol
             }
         } else null
     }
     override var getter: IrSimpleFunction? by lazyVar {
-        trueDescriptor.getter?.let { stubGenerator.generateFunctionStub(it, createPropertyIfNeeded = false) }?.apply {
+        initialDescriptor.getter?.let { stubGenerator.generateFunctionStub(it, createPropertyIfNeeded = false) }?.apply {
             correspondingPropertySymbol = this@IrLazyProperty.symbol
         }
     }
     override var setter: IrSimpleFunction? by lazyVar {
-        trueDescriptor.setter?.let { stubGenerator.generateFunctionStub(it, createPropertyIfNeeded = false) }?.apply {
+        initialDescriptor.setter?.let { stubGenerator.generateFunctionStub(it, createPropertyIfNeeded = false) }?.apply {
             correspondingPropertySymbol = this@IrLazyProperty.symbol
         }
     }

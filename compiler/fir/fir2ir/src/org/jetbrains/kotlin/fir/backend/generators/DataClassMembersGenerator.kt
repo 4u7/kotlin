@@ -273,7 +273,7 @@ class DataClassMembersGenerator(val components: Fir2IrComponents) {
                 parent = irClass
                 functionDescriptor.bind(this)
                 dispatchReceiverParameter = generateDispatchReceiverParameter(this, thisReceiverDescriptor)
-                components.irBuiltIns.anyClass.trueDescriptor.unsubstitutedMemberScope
+                components.irBuiltIns.anyClass.initialDescriptor.unsubstitutedMemberScope
                     .getContributedFunctions(this.name, NoLookupLocation.FROM_BACKEND)
                     .singleOrNull { function -> function.name == this.name }
                     ?.let {

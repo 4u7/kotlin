@@ -24,7 +24,7 @@ import org.jetbrains.kotlin.ir.symbols.*
 import org.jetbrains.kotlin.ir.util.IdSignature
 import org.jetbrains.kotlin.ir.util.render
 
-abstract class IrSymbolBase<out D : DeclarationDescriptor>(override val trueDescriptor: D) : IrSymbol {
+abstract class IrSymbolBase<out D : DeclarationDescriptor>(override val initialDescriptor: D) : IrSymbol {
     override fun toString(): String {
         if (isBound) return owner.render()
         return "Unbound private symbol ${super.toString()}"
@@ -68,7 +68,7 @@ abstract class IrBindableSymbolBase<out D : DeclarationDescriptor, B : IrSymbolO
     override fun bind(owner: B) {
         if (_owner == null) {
             _owner = owner
-            if (descriptor != trueDescriptor) {
+            if (descriptor != initialDescriptor) {
                 (descriptor as? WrappedDeclarationDescriptor<IrDeclaration>)?.bind(owner as IrDeclaration)
             }
         } else {

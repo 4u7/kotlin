@@ -66,7 +66,7 @@ class JsIrBackendContext(
             override val descriptor: PackageFragmentDescriptor
                 get() = irBuiltIns.packageFragment.packageFragmentDescriptor
 
-            override val trueDescriptor: PackageFragmentDescriptor
+            override val initialDescriptor: PackageFragmentDescriptor
                 get() = irBuiltIns.packageFragment.packageFragmentDescriptor
 
             private var _owner: IrExternalPackageFragment? = null

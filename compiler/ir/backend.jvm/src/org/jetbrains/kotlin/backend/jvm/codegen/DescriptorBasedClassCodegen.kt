@@ -45,7 +45,7 @@ class DescriptorBasedClassCodegen internal constructor(
         val localDelegatedProperties = (irClass.attributeOwnerId as? IrClass)?.let(context.localDelegatedProperties::get)
         if (localDelegatedProperties != null && localDelegatedProperties.isNotEmpty()) {
             state.bindingTrace.record(
-                CodegenBinding.DELEGATED_PROPERTIES_WITH_METADATA, type, localDelegatedProperties.map { it.trueDescriptor }
+                CodegenBinding.DELEGATED_PROPERTIES_WITH_METADATA, type, localDelegatedProperties.map { it.initialDescriptor }
             )
         }
 

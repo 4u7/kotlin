@@ -45,30 +45,30 @@ class Ir2DescriptorManglerAdapter(private val delegate: DescriptorBasedKotlinMan
     override fun IrDeclaration.isExported(): Boolean {
         return when (this) {
             is IrAnonymousInitializer -> false
-            is IrEnumEntry -> delegate.run { symbol.trueDescriptor.isExportEnumEntry() }
-            is IrField -> delegate.run { symbol.trueDescriptor.isExportField() }
-            else -> delegate.run { trueDescriptor.isExported() }
+            is IrEnumEntry -> delegate.run { symbol.initialDescriptor.isExportEnumEntry() }
+            is IrField -> delegate.run { symbol.initialDescriptor.isExportField() }
+            else -> delegate.run { initialDescriptor.isExported() }
         }
     }
 
     override val IrDeclaration.mangleString: String
         get() {
             return when (this) {
-                is IrEnumEntry -> delegate.run { symbol.trueDescriptor.mangleEnumEntryString() }
-                is IrField -> delegate.run { symbol.trueDescriptor.mangleFieldString() }
-                else -> delegate.run { trueDescriptor.mangleString }
+                is IrEnumEntry -> delegate.run { symbol.initialDescriptor.mangleEnumEntryString() }
+                is IrField -> delegate.run { symbol.initialDescriptor.mangleFieldString() }
+                else -> delegate.run { initialDescriptor.mangleString }
             }
         }
 
     override val IrDeclaration.signatureString: String
-        get() = delegate.run { trueDescriptor.signatureString }
+        get() = delegate.run { initialDescriptor.signatureString }
 
     override val IrDeclaration.fqnString: String
-        get() = delegate.run { trueDescriptor.fqnString }
+        get() = delegate.run { initialDescriptor.fqnString }
 
     override fun getExportChecker() = error("Should not have been reached")
 
     override fun getMangleComputer(mode: MangleMode): KotlinMangleComputer<IrDeclaration> = error("Should not have been reached")
 
-    private val IrDeclaration.trueDescriptor get() = (this as? IrSymbolOwner)?.symbol?.trueDescriptor ?: descriptor
+    private val IrDeclaration.initialDescriptor get() = (this as? IrSymbolOwner)?.symbol?.initialDescriptor ?: descriptor
 }

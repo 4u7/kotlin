@@ -44,7 +44,7 @@ class IrEnumConstructorCallImpl(
         endOffset: Int,
         type: IrType,
         symbol: IrConstructorSymbol
-    ) : this(startOffset, endOffset, type, symbol, symbol.trueDescriptor.typeParametersCount, symbol.trueDescriptor.valueParameters.size)
+    ) : this(startOffset, endOffset, type, symbol, symbol.initialDescriptor.typeParametersCount, symbol.initialDescriptor.valueParameters.size)
 
     constructor(
         startOffset: Int,
@@ -52,7 +52,7 @@ class IrEnumConstructorCallImpl(
         type: IrType,
         symbol: IrConstructorSymbol,
         typeArgumentsCount: Int
-    ) : this(startOffset, endOffset, type, symbol, typeArgumentsCount, symbol.trueDescriptor.valueParameters.size)
+    ) : this(startOffset, endOffset, type, symbol, typeArgumentsCount, symbol.initialDescriptor.valueParameters.size)
 
     override fun <R, D> accept(visitor: IrElementVisitor<R, D>, data: D): R {
         return visitor.visitEnumConstructorCall(this, data)

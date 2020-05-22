@@ -21,7 +21,7 @@ fun referenceExpectsForUsedActuals(
     irModule.acceptVoid(object : IrElementVisitorVoid {
 
         private fun <T> T.forEachExpect(body: (DeclarationDescriptor) -> Unit) where T : IrSymbolOwner {
-            this.symbol.trueDescriptor.findExpects().forEach {
+            this.symbol.initialDescriptor.findExpects().forEach {
                 body(it)
             }
         }

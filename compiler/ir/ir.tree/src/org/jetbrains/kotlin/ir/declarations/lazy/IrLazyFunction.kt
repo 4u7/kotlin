@@ -23,7 +23,7 @@ class IrLazyFunction(
     endOffset: Int,
     origin: IrDeclarationOrigin,
     override val symbol: IrSimpleFunctionSymbol,
-    trueDescriptor: FunctionDescriptor,
+    initialDescriptor: FunctionDescriptor,
     name: Name,
     visibility: Visibility,
     override val modality: Modality,
@@ -38,7 +38,7 @@ class IrLazyFunction(
     typeTranslator: TypeTranslator
 ) :
     IrLazyFunctionBase(
-        startOffset, endOffset, trueDescriptor, origin, name, visibility, isInline, isExternal, isExpect, stubGenerator, typeTranslator
+        startOffset, endOffset, initialDescriptor, origin, name, visibility, isInline, isExternal, isExpect, stubGenerator, typeTranslator
     ),
     IrSimpleFunction {
 
@@ -46,10 +46,10 @@ class IrLazyFunction(
 
     override var typeParameters: List<IrTypeParameter> by lazyVar {
         typeTranslator.buildWithScope(this) {
-            stubGenerator.symbolTable.withScope(trueDescriptor) {
-                val propertyIfAccessor = trueDescriptor.propertyIfAccessor
+            stubGenerator.symbolTable.withScope(initialDescriptor) {
+                val propertyIfAccessor = initialDescriptor.propertyIfAccessor
                 propertyIfAccessor.typeParameters.mapTo(arrayListOf()) { typeParameterDescriptor ->
-                    if (trueDescriptor != propertyIfAccessor) {
+                    if (initialDescriptor != propertyIfAccessor) {
                         stubGenerator.generateOrGetScopedTypeParameterStub(typeParameterDescriptor).also { irTypeParameter ->
                             irTypeParameter.parent = this@IrLazyFunction
                         }
@@ -63,7 +63,7 @@ class IrLazyFunction(
 
 
     override var overriddenSymbols: List<IrSimpleFunctionSymbol> by lazyVar {
-        trueDescriptor.overriddenDescriptors.mapTo(arrayListOf()) {
+        initialDescriptor.overriddenDescriptors.mapTo(arrayListOf()) {
             stubGenerator.generateFunctionStub(it.original).symbol
         }
     }

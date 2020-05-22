@@ -24,7 +24,7 @@ class ScopedTypeParametersResolver : TypeParametersResolver {
     override fun enterTypeParameterScope(typeParametersContainer: IrTypeParametersContainer) {
         typeParameterScopes.addFirst(
             typeParametersContainer.typeParameters.associate {
-                it.symbol.trueDescriptor to it.symbol
+                it.symbol.initialDescriptor to it.symbol
             }
         )
     }

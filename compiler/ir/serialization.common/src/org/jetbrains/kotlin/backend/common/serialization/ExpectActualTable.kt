@@ -92,7 +92,7 @@ class ExpectActualTable(val expectDescriptorToSymbol: MutableMap<DeclarationDesc
         if (declaration.descriptor !is MemberDescriptor) return
         if (declaration !is IrSymbolDeclaration<*>) return
 
-        val descriptor = declaration.symbol.trueDescriptor
+        val descriptor = declaration.symbol.initialDescriptor
 
         if (declaration is IrTypeAlias && declaration.isActual) {
             val rightHandSide = declaration.expandedType.classOrNull?.owner?.recordRightHandSide()

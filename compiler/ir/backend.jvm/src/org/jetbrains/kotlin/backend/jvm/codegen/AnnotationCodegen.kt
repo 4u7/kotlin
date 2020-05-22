@@ -187,7 +187,7 @@ abstract class AnnotationCodegen(
         // We do not generate annotations whose classes are optional (annotated with `@OptionalExpectation`) because if an annotation entry
         // is resolved to the expected declaration, this means that annotation has no actual class, and thus should not be generated.
         // (Otherwise we would've resolved the entry to the actual annotation class.)
-        if (ExpectedActualDeclarationChecker.isOptionalAnnotationClass(annotationClass.symbol.trueDescriptor)) {
+        if (ExpectedActualDeclarationChecker.isOptionalAnnotationClass(annotationClass.symbol.initialDescriptor)) {
             return null
         }
 
@@ -339,7 +339,7 @@ abstract class AnnotationCodegen(
                 // Those are type annotations which were compiled with JVM target bytecode version 1.8 or greater
                 (it.annotationClass.origin != IrDeclarationOrigin.IR_EXTERNAL_DECLARATION_STUB &&
                         it.annotationClass.origin != IrDeclarationOrigin.IR_EXTERNAL_JAVA_DECLARATION_STUB) ||
-                        isCompiledToJvm8OrHigher(it.annotationClass.symbol.trueDescriptor)
+                        isCompiledToJvm8OrHigher(it.annotationClass.symbol.initialDescriptor)
             }
         }
     }

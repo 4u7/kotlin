@@ -31,7 +31,7 @@ class EnumClassMembersGenerator(declarationGenerator: DeclarationGenerator) : De
     }
 
     private fun generateValues(irClass: IrClass) {
-        val valuesFunction = irClass.symbol.trueDescriptor.staticScope.findFirstFunction("values") {
+        val valuesFunction = irClass.symbol.initialDescriptor.staticScope.findFirstFunction("values") {
             it.dispatchReceiverParameter == null &&
                     it.extensionReceiverParameter == null &&
                     it.valueParameters.size == 0
@@ -50,7 +50,7 @@ class EnumClassMembersGenerator(declarationGenerator: DeclarationGenerator) : De
     }
 
     private fun generateValueOf(irClass: IrClass) {
-        val valueOfFunction = irClass.symbol.trueDescriptor.staticScope.findFirstFunction("valueOf") {
+        val valueOfFunction = irClass.symbol.initialDescriptor.staticScope.findFirstFunction("valueOf") {
             it.dispatchReceiverParameter == null &&
                     it.extensionReceiverParameter == null &&
                     it.valueParameters.size == 1
