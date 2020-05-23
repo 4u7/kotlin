@@ -43,7 +43,7 @@ class IrLazyField(
         symbol.bind(this)
     }
 
-    override val descriptor get() = symbol.descriptor
+    override val wrappedDescriptor get() = symbol.wrappedDescriptor
     override val initialDescriptor get() = symbol.initialDescriptor
 
     override var annotations: List<IrConstructorCall> by lazyVar {

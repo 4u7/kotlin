@@ -65,7 +65,7 @@ class ScriptRemoveReceiverLowering(val context: CommonBackendContext) : FileLowe
 
                     val result = with(super.visitFunctionReference(expression) as IrFunctionReference) {
                         val arguments = (type as IrSimpleType).arguments.filter {
-                            !(it is IrTypeProjection && it.type is IrSimpleType && (it.type as IrSimpleType).classifier.descriptor is ScriptDescriptor)
+                            !(it is IrTypeProjection && it.type is IrSimpleType && (it.type as IrSimpleType).classifier.wrappedDescriptor is ScriptDescriptor)
                         }
                         IrFunctionReferenceImpl(
                             startOffset,
@@ -101,7 +101,7 @@ class ScriptRemoveReceiverLowering(val context: CommonBackendContext) : FileLowe
 
                     val result = with(super.visitPropertyReference(expression) as IrPropertyReference) {
                         val arguments = (type as IrSimpleType).arguments.filter {
-                            !(it is IrTypeProjection && it.type is IrSimpleType && (it.type as IrSimpleType).classifier.descriptor is ScriptDescriptor)
+                            !(it is IrTypeProjection && it.type is IrSimpleType && (it.type as IrSimpleType).classifier.wrappedDescriptor is ScriptDescriptor)
                         }
                         IrPropertyReferenceImpl(
                             startOffset,

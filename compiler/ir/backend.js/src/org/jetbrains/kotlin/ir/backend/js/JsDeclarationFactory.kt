@@ -98,7 +98,7 @@ class JsDeclarationFactory(mapping: JsMapping) : DeclarationFactory {
         val irClass = oldConstructor.parent as IrClass
         val outerThisType = (irClass.parent as IrClass).defaultType
 
-        val descriptor = WrappedClassConstructorDescriptor(oldConstructor.descriptor.annotations, oldConstructor.descriptor.source)
+        val descriptor = WrappedClassConstructorDescriptor(oldConstructor.wrappedDescriptor.annotations, oldConstructor.wrappedDescriptor.source)
         val symbol = IrConstructorSymbolImpl(descriptor)
 
         val newConstructor = IrConstructorImpl(

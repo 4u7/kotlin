@@ -39,7 +39,7 @@ class IrLazyConstructor(
     ),
     IrConstructor {
 
-    override val descriptor get() = symbol.descriptor
+    override val wrappedDescriptor get() = symbol.wrappedDescriptor
     override val initialDescriptor get() = symbol.initialDescriptor
 
     override var typeParameters: List<IrTypeParameter> by lazyVar {

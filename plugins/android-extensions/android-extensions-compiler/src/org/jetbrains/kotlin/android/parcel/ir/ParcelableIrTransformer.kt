@@ -108,7 +108,7 @@ class ParcelableIrTransformer(private val context: IrPluginContext, private val 
             it.isSubclassOfFqName(PARCELER_FQNAME.asString())
         }
 
-        if (declaration.descriptor.hasSyntheticDescribeContents()) {
+        if (declaration.wrappedDescriptor.hasSyntheticDescribeContents()) {
             val describeContents = declaration.addOverride(
                 ANDROID_PARCELABLE_CLASS_FQNAME,
                 "describeContents",
@@ -121,19 +121,19 @@ class ParcelableIrTransformer(private val context: IrPluginContext, private val 
                 }
 
                 (this as IrFunctionImpl).metadata = MetadataSource.Function(
-                    declaration.descriptor.findFunction(ParcelableSyntheticComponent.ComponentKind.DESCRIBE_CONTENTS)!!
+                    declaration.wrappedDescriptor.findFunction(ParcelableSyntheticComponent.ComponentKind.DESCRIBE_CONTENTS)!!
                 )
             }
 
             declaration.functions.find {
-                it.descriptor.safeAs<ParcelableSyntheticComponent>()?.componentKind == ParcelableSyntheticComponent.ComponentKind.DESCRIBE_CONTENTS
+                it.wrappedDescriptor.safeAs<ParcelableSyntheticComponent>()?.componentKind == ParcelableSyntheticComponent.ComponentKind.DESCRIBE_CONTENTS
             }?.let { stub ->
                 symbolMap[stub.symbol] = describeContents.symbol
                 declaration.declarations.remove(stub)
             }
         }
 
-        if (declaration.descriptor.hasSyntheticWriteToParcel()) {
+        if (declaration.wrappedDescriptor.hasSyntheticWriteToParcel()) {
             val writeToParcel = declaration.addOverride(
                 ANDROID_PARCELABLE_CLASS_FQNAME,
                 "writeToParcel",
@@ -176,12 +176,12 @@ class ParcelableIrTransformer(private val context: IrPluginContext, private val 
                 }
 
                 (this as IrFunctionImpl).metadata = MetadataSource.Function(
-                    declaration.descriptor.findFunction(ParcelableSyntheticComponent.ComponentKind.WRITE_TO_PARCEL)!!
+                    declaration.wrappedDescriptor.findFunction(ParcelableSyntheticComponent.ComponentKind.WRITE_TO_PARCEL)!!
                 )
             }
 
             declaration.functions.find {
-                it.descriptor.safeAs<ParcelableSyntheticComponent>()?.componentKind == ParcelableSyntheticComponent.ComponentKind.WRITE_TO_PARCEL
+                it.wrappedDescriptor.safeAs<ParcelableSyntheticComponent>()?.componentKind == ParcelableSyntheticComponent.ComponentKind.WRITE_TO_PARCEL
             }?.let { stub ->
                 symbolMap[stub.symbol] = writeToParcel.symbol
                 declaration.declarations.remove(stub)
@@ -190,7 +190,7 @@ class ParcelableIrTransformer(private val context: IrPluginContext, private val 
 
         val creatorType = androidSymbols.androidOsParcelableCreator.typeWith(declaration.defaultType)
 
-        if (!declaration.descriptor.hasCreatorField()) {
+        if (!declaration.wrappedDescriptor.hasCreatorField()) {
             declaration.addField {
                 name = ParcelableExtensionBase.CREATOR_NAME
                 type = creatorType

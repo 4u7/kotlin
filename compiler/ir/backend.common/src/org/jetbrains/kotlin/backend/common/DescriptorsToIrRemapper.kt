@@ -56,50 +56,50 @@ object WrappedDescriptorPatcher : IrElementVisitorVoid {
     }
 
     override fun visitClass(declaration: IrClass) {
-        (declaration.descriptor as WrappedClassDescriptor).bind(declaration)
+        (declaration.wrappedDescriptor as WrappedClassDescriptor).bind(declaration)
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitConstructor(declaration: IrConstructor) {
-        (declaration.descriptor as WrappedClassConstructorDescriptor).bind(declaration)
+        (declaration.wrappedDescriptor as WrappedClassConstructorDescriptor).bind(declaration)
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitEnumEntry(declaration: IrEnumEntry) {
-        (declaration.descriptor as WrappedClassDescriptor).bind(
+        (declaration.wrappedDescriptor as WrappedClassDescriptor).bind(
             declaration.correspondingClass ?: declaration.parentAsClass
         )
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitField(declaration: IrField) {
-        (declaration.descriptor as WrappedFieldDescriptor).bind(declaration)
+        (declaration.wrappedDescriptor as WrappedFieldDescriptor).bind(declaration)
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitProperty(declaration: IrProperty) {
-        (declaration.descriptor as WrappedPropertyDescriptor).bind(declaration)
+        (declaration.wrappedDescriptor as WrappedPropertyDescriptor).bind(declaration)
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitFunction(declaration: IrFunction) {
-        (declaration.descriptor as WrappedSimpleFunctionDescriptor).bind(declaration as IrSimpleFunction)
+        (declaration.wrappedDescriptor as WrappedSimpleFunctionDescriptor).bind(declaration as IrSimpleFunction)
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitValueParameter(declaration: IrValueParameter) {
-        (declaration.descriptor as? WrappedValueParameterDescriptor)?.bind(declaration)
-        (declaration.descriptor as? WrappedReceiverParameterDescriptor)?.bind(declaration)
+        (declaration.wrappedDescriptor as? WrappedValueParameterDescriptor)?.bind(declaration)
+        (declaration.wrappedDescriptor as? WrappedReceiverParameterDescriptor)?.bind(declaration)
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitTypeParameter(declaration: IrTypeParameter) {
-        (declaration.descriptor as WrappedTypeParameterDescriptor).bind(declaration)
+        (declaration.wrappedDescriptor as WrappedTypeParameterDescriptor).bind(declaration)
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitVariable(declaration: IrVariable) {
-        (declaration.descriptor as WrappedVariableDescriptor).bind(declaration)
+        (declaration.wrappedDescriptor as WrappedVariableDescriptor).bind(declaration)
         declaration.acceptChildrenVoid(this)
     }
 }

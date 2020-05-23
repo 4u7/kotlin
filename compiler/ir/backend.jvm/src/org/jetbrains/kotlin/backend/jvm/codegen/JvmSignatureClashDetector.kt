@@ -168,7 +168,7 @@ class JvmSignatureClashDetector(
         return JvmDeclarationOrigin(
             JvmDeclarationOriginKind.OTHER,
             context.psiSourceManager.findPsiElement(this),
-            descriptor
+            wrappedDescriptor
         )
     }
 

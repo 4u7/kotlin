@@ -21,7 +21,6 @@ import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationOrigin
 import org.jetbrains.kotlin.ir.declarations.IrEnumEntry
 import org.jetbrains.kotlin.ir.declarations.impl.carriers.EnumEntryCarrier
-import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.IrExpressionBody
 import org.jetbrains.kotlin.ir.symbols.IrEnumEntrySymbol
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformer
@@ -42,7 +41,7 @@ class IrEnumEntryImpl(
         symbol.bind(this)
     }
 
-    override val descriptor: ClassDescriptor get() = symbol.descriptor
+    override val wrappedDescriptor: ClassDescriptor get() = symbol.wrappedDescriptor
     override val initialDescriptor: ClassDescriptor get() = symbol.initialDescriptor
 
     override var correspondingClassField: IrClass? = null

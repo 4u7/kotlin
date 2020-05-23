@@ -38,7 +38,7 @@ interface InlineFunctionResolver {
 
 open class DefaultInlineFunctionResolver(open val context: CommonBackendContext) : InlineFunctionResolver {
     override fun getFunctionDeclaration(symbol: IrFunctionSymbol): IrFunction {
-        val descriptor = symbol.descriptor.original
+        val descriptor = symbol.wrappedDescriptor.original
         val languageVersionSettings = context.configuration.languageVersionSettings
         // TODO: Remove these hacks when coroutine intrinsics are fixed.
         return when {
@@ -150,7 +150,7 @@ class FunctionInlining(
             val evaluationStatements = evaluateArguments(callSite, copiedCallee)
             val statements = (copiedCallee.body as IrBlockBody).statements
 
-            val irReturnableBlockSymbol = IrReturnableBlockSymbolImpl(copiedCallee.descriptor.original)
+            val irReturnableBlockSymbol = IrReturnableBlockSymbolImpl(copiedCallee.wrappedDescriptor.original)
             val endOffset = callee.endOffset
             /* creates irBuilder appending to the end of the given returnable block: thus why we initialize
              * irBuilder with (..., endOffset, endOffset).
@@ -161,7 +161,7 @@ class FunctionInlining(
             statements.transform { it.transform(transformer, data = null) }
             statements.addAll(0, evaluationStatements)
 
-            val isCoroutineIntrinsicCall = callSite.symbol.descriptor.isBuiltInSuspendCoroutineUninterceptedOrReturn(
+            val isCoroutineIntrinsicCall = callSite.symbol.wrappedDescriptor.isBuiltInSuspendCoroutineUninterceptedOrReturn(
                 context.configuration.languageVersionSettings
             )
 
@@ -411,7 +411,7 @@ class FunctionInlining(
                     }
 
                     else -> {
-                        val message = "Incomplete expression: call to ${callee.descriptor} " +
+                        val message = "Incomplete expression: call to ${callee.wrappedDescriptor} " +
                                 "has no argument at index ${parameter.index}"
                         throw Error(message)
                     }

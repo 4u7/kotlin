@@ -149,9 +149,9 @@ fun IrValueParameter.copyTo(
     isNoinline: Boolean = this.isNoinline
 ): IrValueParameter {
     val descriptor = if (index < 0) {
-        WrappedReceiverParameterDescriptor(this.descriptor.annotations, this.descriptor.source)
+        WrappedReceiverParameterDescriptor(this.wrappedDescriptor.annotations, this.wrappedDescriptor.source)
     } else {
-        WrappedValueParameterDescriptor(this.descriptor.annotations, this.descriptor.source)
+        WrappedValueParameterDescriptor(this.wrappedDescriptor.annotations, this.wrappedDescriptor.source)
     }
     val symbol = IrValueParameterSymbolImpl(descriptor)
     val defaultValueCopy = defaultValue?.let { originalDefault ->
@@ -177,7 +177,7 @@ fun IrTypeParameter.copyToWithoutSuperTypes(
     index: Int = this.index,
     origin: IrDeclarationOrigin = this.origin
 ): IrTypeParameter {
-    val descriptor = WrappedTypeParameterDescriptor(symbol.descriptor.annotations, symbol.descriptor.source)
+    val descriptor = WrappedTypeParameterDescriptor(symbol.wrappedDescriptor.annotations, symbol.wrappedDescriptor.source)
     val symbol = IrTypeParameterSymbolImpl(descriptor)
     return IrTypeParameterImpl(startOffset, endOffset, origin, symbol, name, index, isReified, variance).also { copied ->
         descriptor.bind(copied)
@@ -187,7 +187,7 @@ fun IrTypeParameter.copyToWithoutSuperTypes(
 
 fun IrFunction.copyReceiverParametersFrom(from: IrFunction) {
     dispatchReceiverParameter = from.dispatchReceiverParameter?.let {
-        IrValueParameterImpl(it.startOffset, it.endOffset, it.origin, it.descriptor, it.type, it.varargElementType).also {
+        IrValueParameterImpl(it.startOffset, it.endOffset, it.origin, it.wrappedDescriptor, it.type, it.varargElementType).also {
             it.parent = this
         }
     }
@@ -463,7 +463,7 @@ fun IrFunction.createDispatchReceiverParameter(origin: IrDeclarationOrigin? = nu
     dispatchReceiverParameter = IrValueParameterImpl(
         startOffset, endOffset,
         origin ?: parentAsClass.origin,
-        IrValueParameterSymbolImpl(parentAsClass.thisReceiver!!.descriptor),
+        IrValueParameterSymbolImpl(parentAsClass.thisReceiver!!.wrappedDescriptor),
         Name.special("<this>"),
         0,
         parentAsClass.defaultType,
@@ -479,7 +479,7 @@ val IrFunction.allParameters: List<IrValueParameter>
     get() = if (this is IrConstructor) {
         listOf(
             this.constructedClass.thisReceiver
-                ?: error(this.descriptor)
+                ?: error(this.wrappedDescriptor)
         ) + explicitParameters
     } else {
         explicitParameters
@@ -560,9 +560,9 @@ fun createStaticFunctionWithReceivers(
     copyMetadata: Boolean = true,
     typeParametersFromContext: List<IrTypeParameter> = listOf()
 ): IrSimpleFunction {
-    val descriptor = (oldFunction.descriptor as? DescriptorWithContainerSource)?.let {
+    val descriptor = (oldFunction.wrappedDescriptor as? DescriptorWithContainerSource)?.let {
         WrappedFunctionDescriptorWithContainerSource(it.containerSource)
-    } ?: WrappedSimpleFunctionDescriptor(Annotations.EMPTY, oldFunction.descriptor.source)
+    } ?: WrappedSimpleFunctionDescriptor(Annotations.EMPTY, oldFunction.wrappedDescriptor.source)
     return IrFunctionImpl(
         oldFunction.startOffset, oldFunction.endOffset,
         origin,

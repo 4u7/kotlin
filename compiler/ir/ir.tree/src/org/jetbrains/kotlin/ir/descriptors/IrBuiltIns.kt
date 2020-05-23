@@ -286,7 +286,7 @@ class IrBuiltIns(
 
     val checkNotNullSymbol = defineCheckNotNullOperator()
 
-    val checkNotNull = checkNotNullSymbol.descriptor
+    val checkNotNull = checkNotNullSymbol.wrappedDescriptor
 
     private fun TypeConstructor.makeNonNullType() = KotlinTypeFactory.simpleType(Annotations.EMPTY, this, listOf(), false)
     private fun TypeConstructor.makeNullableType() = KotlinTypeFactory.simpleType(Annotations.EMPTY, this, listOf(), true)

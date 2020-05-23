@@ -87,7 +87,7 @@ private class AdditionalClassAnnotationLowering(private val context: JvmBackendC
         IrEnumEntrySymbolImpl(WrappedEnumEntryDescriptor()),
         Name.identifier(entryName)
     ).apply {
-        (descriptor as WrappedEnumEntryDescriptor).bind(this)
+        (wrappedDescriptor as WrappedEnumEntryDescriptor).bind(this)
         parent = enumClass
         enumClass.addChild(this)
     }

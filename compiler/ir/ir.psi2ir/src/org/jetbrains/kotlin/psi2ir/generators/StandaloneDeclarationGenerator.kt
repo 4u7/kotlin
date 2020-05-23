@@ -68,7 +68,7 @@ class StandaloneDeclarationGenerator(private val context: GeneratorContext) {
         }
 
         for (irTypeParameter in irTypeParametersOwner.typeParameters) {
-            irTypeParameter.descriptor.upperBounds.mapTo(irTypeParameter.superTypes) {
+            irTypeParameter.initialDescriptor.upperBounds.mapTo(irTypeParameter.superTypes) {
                 it.toIrType()
             }
         }

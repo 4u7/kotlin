@@ -177,7 +177,7 @@ class FunctionGenerator(val function: IrFunction) {
         override fun visitMemberAccess(expression: IrMemberAccessExpression, data: Boolean): IrStatement? {
             expression.dispatchReceiver?.process()
             expression.extensionReceiver?.process()
-            val descriptor = expression.symbol.descriptor as CallableDescriptor
+            val descriptor = expression.symbol.wrappedDescriptor as CallableDescriptor
             for (valueParameter in descriptor.valueParameters) {
                 expression.getValueArgument(valueParameter)?.process()
             }

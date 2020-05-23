@@ -136,7 +136,7 @@ interface IrBuilderExtension {
 
     fun <T : IrDeclaration> T.buildWithScope(builder: (T) -> Unit): T =
         also { irDeclaration ->
-            compilerContext.symbolTable.withReferenceScope(irDeclaration.descriptor) {
+            compilerContext.symbolTable.withReferenceScope(irDeclaration.initialDescriptor) {
                 builder(irDeclaration)
             }
         }
@@ -388,17 +388,17 @@ interface IrBuilderExtension {
             copyTypeParamsFromDescriptor()
         }
 
-        dispatchReceiverParameter = descriptor.dispatchReceiverParameter?.irValueParameter()
-        extensionReceiverParameter = descriptor.extensionReceiverParameter?.irValueParameter()
+        dispatchReceiverParameter = initialDescriptor.dispatchReceiverParameter?.irValueParameter()
+        extensionReceiverParameter = initialDescriptor.extensionReceiverParameter?.irValueParameter()
 
         if (!overwriteValueParameters)
             assert(valueParameters.isEmpty())
 
-        valueParameters = descriptor.valueParameters.map { it.irValueParameter() }
+        valueParameters = initialDescriptor.valueParameters.map { it.irValueParameter() }
     }
 
     fun IrFunction.copyTypeParamsFromDescriptor() {
-        val newTypeParameters = descriptor.typeParameters.map {
+        val newTypeParameters = initialDescriptor.typeParameters.map {
             IrTypeParameterImpl(
                 startOffset, endOffset,
                 SERIALIZABLE_PLUGIN_ORIGIN,
@@ -409,7 +409,7 @@ interface IrBuilderExtension {
         }
 
         newTypeParameters.forEach { typeParameter ->
-            typeParameter.superTypes.addAll(typeParameter.descriptor.upperBounds.map { it.toIrType() })
+            typeParameter.superTypes.addAll(typeParameter.initialDescriptor.upperBounds.map { it.toIrType() })
         }
 
         typeParameters = newTypeParameters
@@ -440,13 +440,13 @@ interface IrBuilderExtension {
             ?: throw IllegalStateException("Serializable class must have single primary constructor")
         // default arguments of original constructor
         val defaultsMap: Map<ParameterDescriptor, IrExpression?> =
-            original.valueParameters.associate { it.descriptor to it.defaultValue?.expression }
+            original.valueParameters.associate { it.wrappedDescriptor to it.defaultValue?.expression }
         return fun(f: IrField): IrExpression? {
             val i = f.initializer?.expression ?: return null
             val irExpression =
                 if (i is IrGetValueImpl && i.origin == IrStatementOrigin.INITIALIZE_PROPERTY_FROM_PARAMETER) {
                     // this is a primary constructor property, use corresponding default of value parameter
-                    defaultsMap.getValue(i.symbol.descriptor as ParameterDescriptor)
+                    defaultsMap.getValue(i.symbol.wrappedDescriptor as ParameterDescriptor)
                 } else {
                     i
                 }

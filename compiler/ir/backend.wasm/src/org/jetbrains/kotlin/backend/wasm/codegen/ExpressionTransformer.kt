@@ -110,6 +110,7 @@ class ExpressionTransformer : BaseTransformer<WasmInstruction, WasmCodegenContex
         val wasmArgument = expressionToWasmInstruction(expression.argument, data)
         when (expression.operator) {
             IrTypeOperator.IMPLICIT_COERCION_TO_UNIT -> return wasmArgument
+            else -> {}
         }
         TODO("IrTypeOperatorCall:\n ${expression.dump()}")
     }

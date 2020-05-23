@@ -49,7 +49,8 @@ abstract class IrPropertyCommonImpl(
     IrProperty,
     PropertyCarrier {
 
-    abstract override val descriptor: PropertyDescriptor
+    abstract override val wrappedDescriptor: PropertyDescriptor
+    abstract override val initialDescriptor: PropertyDescriptor
 
     override var backingFieldField: IrField? = null
 
@@ -214,7 +215,8 @@ class IrPropertyImpl(
     init {
         symbol.bind(this)
     }
-    override val descriptor: PropertyDescriptor = symbol.descriptor
+
+    override val wrappedDescriptor: PropertyDescriptor get() = symbol.wrappedDescriptor
     override val initialDescriptor: PropertyDescriptor get() = symbol.initialDescriptor
 }
 
@@ -239,8 +241,8 @@ class IrFakeOverridePropertyImpl(
     override val symbol: IrPropertySymbol
         get() = _symbol ?: error("$this has not acquired a symbol yet")
 
-    override val descriptor get() =
-        _symbol?.descriptor ?: WrappedPropertyDescriptor()
+    override val wrappedDescriptor get() =
+        _symbol?.wrappedDescriptor ?: WrappedPropertyDescriptor()
     override val initialDescriptor get() =
         _symbol?.initialDescriptor ?: WrappedPropertyDescriptor()
 
@@ -248,6 +250,6 @@ class IrFakeOverridePropertyImpl(
         assert(_symbol == null) { "$this already has symbol _symbol" }
         _symbol = symbol
         symbol.bind(this)
-        (symbol.descriptor as? WrappedPropertyDescriptor)?.bind(this)
+        (symbol.wrappedDescriptor as? WrappedPropertyDescriptor)?.bind(this)
     }
 }

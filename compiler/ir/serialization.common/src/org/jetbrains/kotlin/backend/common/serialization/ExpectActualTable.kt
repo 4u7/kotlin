@@ -20,9 +20,9 @@ class ExpectActualTable(val expectDescriptorToSymbol: MutableMap<DeclarationDesc
 
             private fun recordDeclarationActuals(declaration: IrDeclaration) {
 
-                expectDescriptorToSymbol.put(declaration.descriptor, (declaration as IrSymbolOwner).symbol)
+                expectDescriptorToSymbol.put(declaration.wrappedDescriptor, (declaration as IrSymbolOwner).symbol)
 
-                declaration.descriptor.findActuals(inModule).forEach {
+                declaration.wrappedDescriptor.findActuals(inModule).forEach {
                     val realActual = if (it is TypeAliasDescriptor)
                         it.expandedType.constructor.declarationDescriptor as? ClassDescriptor
                             ?: error("Unexpected actual typealias right hand side: $it")
@@ -31,8 +31,8 @@ class ExpectActualTable(val expectDescriptorToSymbol: MutableMap<DeclarationDesc
                     // TODO: what to do with fake overrides???
                     if (!(realActual is CallableMemberDescriptor && realActual.kind == CallableMemberDescriptor.Kind.FAKE_OVERRIDE)) {
                         table.put(
-                            declaration.descriptor, rightHandSide[realActual]
-                                ?: error("Could not find actual type alias target member for: ${declaration.descriptor} -> $it")
+                            declaration.wrappedDescriptor, rightHandSide[realActual]
+                                ?: error("Could not find actual type alias target member for: ${declaration.wrappedDescriptor} -> $it")
                         )
                     }
                 }
@@ -69,19 +69,19 @@ class ExpectActualTable(val expectDescriptorToSymbol: MutableMap<DeclarationDesc
                 element.acceptChildrenVoid(this)
             }
             override fun visitFunction(declaration: IrFunction) {
-                rightHandSide.put(declaration.descriptor, declaration.symbol)
+                rightHandSide.put(declaration.wrappedDescriptor, declaration.symbol)
                 super.visitFunction(declaration)
             }
             override fun visitClass(declaration: IrClass) {
-                rightHandSide.put(declaration.descriptor, declaration.symbol)
+                rightHandSide.put(declaration.wrappedDescriptor, declaration.symbol)
                 super.visitClass(declaration)
             }
             override fun visitProperty(declaration: IrProperty) {
-                rightHandSide.put(declaration.descriptor, declaration.symbol)
+                rightHandSide.put(declaration.wrappedDescriptor, declaration.symbol)
                 super.visitProperty(declaration)
             }
             override fun visitEnumEntry(declaration: IrEnumEntry) {
-                rightHandSide.put(declaration.descriptor, declaration.symbol)
+                rightHandSide.put(declaration.wrappedDescriptor, declaration.symbol)
                 super.visitEnumEntry(declaration)
             }
         })
@@ -89,18 +89,18 @@ class ExpectActualTable(val expectDescriptorToSymbol: MutableMap<DeclarationDesc
     }
 
     fun findExpectsForActuals(declaration: IrDeclaration) {
-        if (declaration.descriptor !is MemberDescriptor) return
+        if (declaration.wrappedDescriptor !is MemberDescriptor) return
         if (declaration !is IrSymbolDeclaration<*>) return
 
         val descriptor = declaration.initialDescriptor
 
         if (declaration is IrTypeAlias && declaration.isActual) {
             val rightHandSide = declaration.expandedType.classOrNull?.owner?.recordRightHandSide()
-                ?: error("Unexpected right hand side of actual typealias: ${declaration.descriptor}")
+                ?: error("Unexpected right hand side of actual typealias: ${declaration.wrappedDescriptor}")
 
 
-            declaration.descriptor.findExpects().forEach {
-                expectDescriptorToSymbol[it]?.owner?.recordActuals(rightHandSide, declaration.descriptor.module)
+            declaration.wrappedDescriptor.findExpects().forEach {
+                expectDescriptorToSymbol[it]?.owner?.recordActuals(rightHandSide, declaration.wrappedDescriptor.module)
             }
             return
         }

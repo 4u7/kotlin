@@ -80,7 +80,7 @@ class WasmBackendContext(
 }
 
 class DescriptorlessExternalPackageFragmentSymbol : IrExternalPackageFragmentSymbol {
-    override val descriptor: PackageFragmentDescriptor
+    override val wrappedDescriptor: PackageFragmentDescriptor
         get() = error("Operation is unsupported")
 
     override val initialDescriptor: PackageFragmentDescriptor

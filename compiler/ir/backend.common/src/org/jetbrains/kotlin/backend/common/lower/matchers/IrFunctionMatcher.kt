@@ -56,7 +56,7 @@ internal class FqNameMatcher(
 ) : IrFunctionMatcher {
 
     override fun invoke(function: IrFunction): Boolean {
-        return restriction(function.descriptor.fqNameSafe)
+        return restriction(function.wrappedDescriptor.fqNameSafe)
     }
 }
 

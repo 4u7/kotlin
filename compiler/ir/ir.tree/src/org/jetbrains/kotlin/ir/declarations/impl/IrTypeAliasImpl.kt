@@ -36,8 +36,8 @@ class IrTypeAliasImpl(
         symbol.bind(this)
     }
 
-    override val descriptor: TypeAliasDescriptor
-        get() = symbol.descriptor
+    override val wrappedDescriptor: TypeAliasDescriptor
+        get() = symbol.wrappedDescriptor
 
     override val initialDescriptor: TypeAliasDescriptor
         get() = symbol.initialDescriptor

@@ -100,7 +100,7 @@ internal class CollectionStubMethodLowering(val context: JvmBackendContext) : Cl
     // Copy value parameter with type substitution
     private fun IrValueParameter.copyWithSubstitution(target: IrSimpleFunction, substitutionMap: Map<IrTypeParameterSymbol, IrType>)
             : IrValueParameter {
-        val descriptor = WrappedValueParameterDescriptor(this.descriptor.annotations)
+        val descriptor = WrappedValueParameterDescriptor(this.wrappedDescriptor.annotations)
         return IrValueParameterImpl(
             UNDEFINED_OFFSET, UNDEFINED_OFFSET,
             IrDeclarationOrigin.IR_BUILTINS_STUB,

@@ -203,7 +203,7 @@ class MethodSignatureMapper(private val context: JvmBackendContext) {
                 JvmLoweredDeclarationOrigin.ENUM_CONSTRUCTOR_SYNTHETIC_PARAMETER -> JvmMethodParameterKind.ENUM_NAME_OR_ORDINAL
                 else -> JvmMethodParameterKind.VALUE
             }
-            val type = if (forceSingleValueParameterBoxing(function.descriptor)) parameter.type.makeNullable() else parameter.type
+            val type = if (forceSingleValueParameterBoxing(function.wrappedDescriptor)) parameter.type.makeNullable() else parameter.type
             writeParameter(sw, kind, type, function)
         }
 
@@ -213,7 +213,7 @@ class MethodSignatureMapper(private val context: JvmBackendContext) {
 
         val signature = sw.makeJvmMethodSignature(mapFunctionName(function, skipSpecial))
 
-        val specialSignatureInfo = with(BuiltinMethodsWithSpecialGenericSignature) { function.descriptor.getSpecialSignatureInfo() }
+        val specialSignatureInfo = with(BuiltinMethodsWithSpecialGenericSignature) { function.wrappedDescriptor.getSpecialSignatureInfo() }
 
         if (specialSignatureInfo != null) {
             val newGenericSignature = specialSignatureInfo.replaceValueParametersIn(signature.genericsSignature)
@@ -315,7 +315,7 @@ class MethodSignatureMapper(private val context: JvmBackendContext) {
         if (caller.origin == IrDeclarationOrigin.BRIDGE || caller.origin == IrDeclarationOrigin.BRIDGE_SPECIAL) return null
         // Do not remap calls to static replacements of inline class methods, since they have completely different signatures.
         if (callee.origin == JvmLoweredDeclarationOrigin.STATIC_INLINE_CLASS_REPLACEMENT) return null
-        val overriddenSpecialBuiltinFunction = callee.descriptor.original.getOverriddenBuiltinReflectingJvmDescriptor()
+        val overriddenSpecialBuiltinFunction = callee.wrappedDescriptor.original.getOverriddenBuiltinReflectingJvmDescriptor()
         if (overriddenSpecialBuiltinFunction != null && !superCall) {
             return mapSignatureSkipGeneric(context.referenceFunction(overriddenSpecialBuiltinFunction.original).owner)
         }

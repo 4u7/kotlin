@@ -70,7 +70,7 @@ abstract class ClassCodegen protected constructor(
             IrDeclarationOrigin.FILE_CLASS ->
                 JvmDeclarationOrigin(JvmDeclarationOriginKind.PACKAGE_PART, psiElement, descriptor)
             JvmLoweredDeclarationOrigin.LAMBDA_IMPL, JvmLoweredDeclarationOrigin.FUNCTION_REFERENCE_IMPL ->
-                OtherOrigin(psiElement, irClass.attributeOwnerId.safeAs<IrFunctionReference>()?.symbol?.descriptor ?: descriptor)
+                OtherOrigin(psiElement, irClass.attributeOwnerId.safeAs<IrFunctionReference>()?.symbol?.wrappedDescriptor ?: descriptor)
             else ->
                 OtherOrigin(psiElement, descriptor)
         }
@@ -380,9 +380,9 @@ internal val IrDeclaration.OtherOrigin: JvmDeclarationOrigin
             // This is needed for plugins which check for lambdas inside of inline functions using the descriptor
             // contained in JvmDeclarationOrigin. This matches the behavior of the JVM backend.
             if (klass.origin == JvmLoweredDeclarationOrigin.LAMBDA_IMPL || klass.origin == JvmLoweredDeclarationOrigin.SUSPEND_LAMBDA) {
-                klass.attributeOwnerId.safeAs<IrFunctionReference>()?.symbol?.descriptor ?: descriptor
+                klass.attributeOwnerId.safeAs<IrFunctionReference>()?.symbol?.wrappedDescriptor ?: wrappedDescriptor
             } else {
-                descriptor
+                wrappedDescriptor
             }
         )
     }

@@ -57,91 +57,91 @@ open class DeepCopySymbolRemapper(
 
     override fun visitClass(declaration: IrClass) {
         remapSymbol(classes, declaration) {
-            IrClassSymbolImpl(descriptorsRemapper.remapDeclaredClass(it.descriptor))
+            IrClassSymbolImpl(descriptorsRemapper.remapDeclaredClass(it.wrappedDescriptor))
         }
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitConstructor(declaration: IrConstructor) {
         remapSymbol(constructors, declaration) {
-            IrConstructorSymbolImpl(descriptorsRemapper.remapDeclaredConstructor(it.descriptor))
+            IrConstructorSymbolImpl(descriptorsRemapper.remapDeclaredConstructor(it.wrappedDescriptor))
         }
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitEnumEntry(declaration: IrEnumEntry) {
         remapSymbol(enumEntries, declaration) {
-            IrEnumEntrySymbolImpl(descriptorsRemapper.remapDeclaredEnumEntry(it.descriptor))
+            IrEnumEntrySymbolImpl(descriptorsRemapper.remapDeclaredEnumEntry(it.wrappedDescriptor))
         }
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitExternalPackageFragment(declaration: IrExternalPackageFragment) {
         remapSymbol(externalPackageFragments, declaration) {
-            IrExternalPackageFragmentSymbolImpl(descriptorsRemapper.remapDeclaredExternalPackageFragment(it.descriptor))
+            IrExternalPackageFragmentSymbolImpl(descriptorsRemapper.remapDeclaredExternalPackageFragment(it.wrappedDescriptor))
         }
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitField(declaration: IrField) {
         remapSymbol(fields, declaration) {
-            IrFieldSymbolImpl(descriptorsRemapper.remapDeclaredField(it.descriptor))
+            IrFieldSymbolImpl(descriptorsRemapper.remapDeclaredField(it.wrappedDescriptor))
         }
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitFile(declaration: IrFile) {
         remapSymbol(files, declaration) {
-            IrFileSymbolImpl(descriptorsRemapper.remapDeclaredFilePackageFragment(it.descriptor))
+            IrFileSymbolImpl(descriptorsRemapper.remapDeclaredFilePackageFragment(it.wrappedDescriptor))
         }
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitSimpleFunction(declaration: IrSimpleFunction) {
         remapSymbol(functions, declaration) {
-            IrSimpleFunctionSymbolImpl(descriptorsRemapper.remapDeclaredSimpleFunction(it.descriptor))
+            IrSimpleFunctionSymbolImpl(descriptorsRemapper.remapDeclaredSimpleFunction(it.wrappedDescriptor))
         }
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitProperty(declaration: IrProperty) {
         remapSymbol(properties, declaration) {
-            IrPropertySymbolImpl(descriptorsRemapper.remapDeclaredProperty(it.descriptor))
+            IrPropertySymbolImpl(descriptorsRemapper.remapDeclaredProperty(it.wrappedDescriptor))
         }
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitTypeParameter(declaration: IrTypeParameter) {
         remapSymbol(typeParameters, declaration) {
-            IrTypeParameterSymbolImpl(descriptorsRemapper.remapDeclaredTypeParameter(it.descriptor))
+            IrTypeParameterSymbolImpl(descriptorsRemapper.remapDeclaredTypeParameter(it.wrappedDescriptor))
         }
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitValueParameter(declaration: IrValueParameter) {
         remapSymbol(valueParameters, declaration) {
-            IrValueParameterSymbolImpl(descriptorsRemapper.remapDeclaredValueParameter(it.descriptor))
+            IrValueParameterSymbolImpl(descriptorsRemapper.remapDeclaredValueParameter(it.wrappedDescriptor))
         }
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitVariable(declaration: IrVariable) {
         remapSymbol(variables, declaration) {
-            IrVariableSymbolImpl(descriptorsRemapper.remapDeclaredVariable(it.descriptor))
+            IrVariableSymbolImpl(descriptorsRemapper.remapDeclaredVariable(it.wrappedDescriptor))
         }
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitLocalDelegatedProperty(declaration: IrLocalDelegatedProperty) {
         remapSymbol(localDelegatedProperties, declaration) {
-            IrLocalDelegatedPropertySymbolImpl(descriptorsRemapper.remapDeclaredLocalDelegatedProperty(it.descriptor))
+            IrLocalDelegatedPropertySymbolImpl(descriptorsRemapper.remapDeclaredLocalDelegatedProperty(it.wrappedDescriptor))
         }
         declaration.acceptChildrenVoid(this)
     }
 
     override fun visitTypeAlias(declaration: IrTypeAlias) {
         remapSymbol(typeAliases, declaration) {
-            IrTypeAliasSymbolImpl(descriptorsRemapper.remapDeclaredTypeAlias(it.descriptor))
+            IrTypeAliasSymbolImpl(descriptorsRemapper.remapDeclaredTypeAlias(it.wrappedDescriptor))
         }
         declaration.acceptChildrenVoid(this)
     }
@@ -149,7 +149,7 @@ open class DeepCopySymbolRemapper(
     override fun visitBlock(expression: IrBlock) {
         if (expression is IrReturnableBlock) {
             remapSymbol(returnableBlocks, expression) {
-                IrReturnableBlockSymbolImpl(expression.descriptor)
+                IrReturnableBlockSymbolImpl(expression.wrappedDescriptor)
             }
         }
         expression.acceptChildrenVoid(this)

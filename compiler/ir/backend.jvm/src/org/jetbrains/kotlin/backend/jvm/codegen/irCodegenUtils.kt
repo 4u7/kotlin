@@ -428,7 +428,7 @@ val IrFunction.deprecationFlags: Int
     }
 
 val IrDeclaration.psiElement: PsiElement?
-    get() = (descriptor as? DeclarationDescriptorWithSource)?.psiElement
+    get() = (initialDescriptor as? DeclarationDescriptorWithSource)?.psiElement
 
 val IrMemberAccessExpression.psiElement: PsiElement?
-    get() = (symbol.descriptor.original as? DeclarationDescriptorWithSource)?.psiElement
+    get() = (symbol.initialDescriptor.original as? DeclarationDescriptorWithSource)?.psiElement

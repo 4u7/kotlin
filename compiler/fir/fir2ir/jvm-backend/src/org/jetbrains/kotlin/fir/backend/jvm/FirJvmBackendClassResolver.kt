@@ -19,7 +19,7 @@ class FirJvmBackendClassResolver(val components: Fir2IrComponents) : JvmBackendC
 
         val symbol = components.session.firSymbolProvider.getClassLikeSymbolByFqName(type.classId) ?: return emptyList()
         require(symbol is FirClassSymbol<*>)
-        return listOf(components.classifierStorage.getIrClassSymbol(symbol).descriptor)
+        return listOf(components.classifierStorage.getIrClassSymbol(symbol).wrappedDescriptor)
     }
 
 }

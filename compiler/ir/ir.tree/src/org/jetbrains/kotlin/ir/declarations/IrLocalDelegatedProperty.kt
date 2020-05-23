@@ -25,7 +25,7 @@ interface IrLocalDelegatedProperty :
     IrDeclarationWithName,
     IrSymbolOwner {
 
-    override val descriptor: VariableDescriptorWithAccessors
+    override val wrappedDescriptor: VariableDescriptorWithAccessors
     override val initialDescriptor: VariableDescriptorWithAccessors
     override val symbol: IrLocalDelegatedPropertySymbol
 

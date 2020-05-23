@@ -230,7 +230,7 @@ class Fir2IrClassifierStorage(
                     isExpect = regularClass.isExpect,
                     isFun = regularClass.isFun
                 ).apply {
-                    val descriptor = symbol.descriptor
+                    val descriptor = symbol.wrappedDescriptor
                     metadata = FirMetadataSource.Class(regularClass, descriptor as WrappedClassDescriptor)
                 }
             }
@@ -263,7 +263,7 @@ class Fir2IrClassifierStorage(
                     anonymousObject.classKind.takeIf { it == ClassKind.ENUM_ENTRY } ?: ClassKind.CLASS,
                     visibility, modality
                 ).apply {
-                    val descriptor = symbol.descriptor
+                    val descriptor = symbol.wrappedDescriptor
                     metadata = FirMetadataSource.Class(anonymousObject, descriptor as WrappedClassDescriptor)
                     setThisReceiver(anonymousObject.typeParameters)
                     if (irParent != null) {

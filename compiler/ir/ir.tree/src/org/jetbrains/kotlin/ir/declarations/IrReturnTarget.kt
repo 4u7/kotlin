@@ -9,6 +9,6 @@ import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.ir.symbols.IrReturnTargetSymbol
 
 interface IrReturnTarget : IrSymbolOwner {
-    val descriptor: FunctionDescriptor
+    val wrappedDescriptor: FunctionDescriptor
     override val symbol: IrReturnTargetSymbol
 }

@@ -260,7 +260,7 @@ open class IrFileSerializer(
         is IrVariableSymbol ->
             BinarySymbolData.SymbolKind.VARIABLE_SYMBOL
         is IrValueParameterSymbol ->
-            if (symbol.descriptor is ReceiverParameterDescriptor) // TODO: we use descriptor here.
+            if (symbol.wrappedDescriptor is ReceiverParameterDescriptor) // TODO: we use descriptor here.
                 BinarySymbolData.SymbolKind.RECEIVER_PARAMETER_SYMBOL
             else
                 BinarySymbolData.SymbolKind.VALUE_PARAMETER_SYMBOL
@@ -1232,7 +1232,7 @@ open class IrFileSerializer(
             .addAllAnnotation(serializeAnnotations(file.annotations))
 
         file.declarations.forEach {
-            if (skipExpects && it.descriptor.isExpectMember && !it.descriptor.isSerializableExpectClass) {
+            if (skipExpects && it.wrappedDescriptor.isExpectMember && !it.wrappedDescriptor.isSerializableExpectClass) {
                 topLevelDeclarations.add(SkippedDeclaration)
                 return@forEach
             }

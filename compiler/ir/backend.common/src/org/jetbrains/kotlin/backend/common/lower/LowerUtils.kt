@@ -65,7 +65,7 @@ open class VariableRemapper(val mapping: Map<IrValueParameter, IrValueDeclaratio
 
 class VariableRemapperDesc(val mapping: Map<ValueDescriptor, IrValueParameter>) : AbstractVariableRemapper() {
     override fun remapVariable(value: IrValueDeclaration): IrValueDeclaration? =
-        mapping[value.descriptor]
+        mapping[value.wrappedDescriptor]
 }
 
 fun BackendContext.createIrBuilder(
@@ -180,9 +180,9 @@ fun IrConstructor.callsSuper(irBuiltIns: IrBuiltIns): Boolean {
             val delegatingClass = expression.symbol.owner.parent as IrClass
             // TODO: figure out why Lazy IR multiplies Declarations for descriptors and fix it
             // It happens because of IrBuiltIns whose IrDeclarations are different for runtime and test
-            if (delegatingClass.descriptor == superClass.classifierOrFail.descriptor)
+            if (delegatingClass.wrappedDescriptor == superClass.classifierOrFail.wrappedDescriptor)
                 callsSuper = true
-            else if (delegatingClass.descriptor != constructedClass.descriptor)
+            else if (delegatingClass.wrappedDescriptor != constructedClass.wrappedDescriptor)
                 throw AssertionError(
                     "Expected either call to another constructor of the class being constructed or" +
                             " call to super class constructor. But was: $delegatingClass with '${delegatingClass.name}' name"

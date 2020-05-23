@@ -36,7 +36,7 @@ abstract class IrBindablePublicSymbolBase<out D : DeclarationDescriptor, B : IrS
         assert(sig.isPublic)
     }
 
-    override val descriptor: D = when {
+    override val wrappedDescriptor: D = when {
         initialDescriptor is WrappedDeclarationDescriptor<*> -> initialDescriptor
         doWrapDescriptor != null -> doWrapDescriptor(initialDescriptor)
         else -> initialDescriptor
@@ -55,8 +55,8 @@ abstract class IrBindablePublicSymbolBase<out D : DeclarationDescriptor, B : IrS
     override fun bind(owner: B) {
         if (_owner == null) {
             _owner = owner
-            if (descriptor != initialDescriptor) {
-                (descriptor as? WrappedDeclarationDescriptor<IrDeclaration>)?.bind(owner as IrDeclaration)
+            if (wrappedDescriptor != initialDescriptor) {
+                (wrappedDescriptor as? WrappedDeclarationDescriptor<IrDeclaration>)?.bind(owner as IrDeclaration)
             }
         } else {
             throw IllegalStateException("${javaClass.simpleName} for $signature is already bound: ${owner.render()}")

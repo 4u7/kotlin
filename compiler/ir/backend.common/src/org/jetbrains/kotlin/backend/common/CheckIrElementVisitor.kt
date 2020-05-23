@@ -260,10 +260,10 @@ class CheckIrElementVisitor(
             // Check that all functions and properties from memberScope are present in IR
             // (including FAKE_OVERRIDE ones).
 
-            val allDescriptors = declaration.descriptor.unsubstitutedMemberScope
+            val allDescriptors = declaration.wrappedDescriptor.unsubstitutedMemberScope
                 .getContributedDescriptors().filterIsInstance<CallableMemberDescriptor>()
 
-            val presentDescriptors = declaration.declarations.map { it.descriptor }
+            val presentDescriptors = declaration.declarations.map { it.wrappedDescriptor }
 
             val missingDescriptors = allDescriptors - presentDescriptors
 
@@ -297,7 +297,7 @@ class CheckIrElementVisitor(
         super.visitDeclarationReference(expression)
 
         // TODO: Fix unbound external declarations
-        if (expression.symbol.descriptor.isEffectivelyExternal())
+        if (expression.symbol.wrappedDescriptor.isEffectivelyExternal())
             return
 
         // TODO: Fix unbound dynamic filed declarations

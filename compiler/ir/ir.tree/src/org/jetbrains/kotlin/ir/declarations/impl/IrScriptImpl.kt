@@ -42,7 +42,7 @@ class IrScriptImpl(
     override val statements: MutableList<IrStatement> = mutableListOf()
 
     override lateinit var thisReceiver: IrValueParameter
-    override val descriptor: ScriptDescriptor get() = symbol.descriptor
+    override val wrappedDescriptor: ScriptDescriptor get() = symbol.wrappedDescriptor
     override val initialDescriptor: ScriptDescriptor get() = symbol.initialDescriptor
 
     init {

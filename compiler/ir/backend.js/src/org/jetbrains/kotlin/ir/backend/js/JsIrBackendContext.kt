@@ -63,7 +63,7 @@ class JsIrBackendContext(
     val bodilessBuiltInsPackageFragment: IrPackageFragment = run {
 
         class BodilessExternalPackageFragmentSymbol : IrExternalPackageFragmentSymbol {
-            override val descriptor: PackageFragmentDescriptor
+            override val wrappedDescriptor: PackageFragmentDescriptor
                 get() = irBuiltIns.packageFragment.packageFragmentDescriptor
 
             override val initialDescriptor: PackageFragmentDescriptor

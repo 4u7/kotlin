@@ -60,7 +60,7 @@ class IrTypeParameterImpl(
         symbol.bind(this)
     }
 
-    override val descriptor: TypeParameterDescriptor get() = symbol.descriptor
+    override val wrappedDescriptor: TypeParameterDescriptor get() = symbol.wrappedDescriptor
     override val initialDescriptor: TypeParameterDescriptor get() = symbol.initialDescriptor
 
     override val superTypes: MutableList<IrType> = SmartList()

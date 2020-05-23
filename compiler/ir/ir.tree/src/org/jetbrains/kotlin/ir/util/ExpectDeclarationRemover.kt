@@ -71,7 +71,7 @@ class ExpectDeclarationRemover(val symbolTable: ReferenceSymbolTable, private va
         val function = declaration.parent as? IrFunction ?: return
 
         if (function is IrConstructor &&
-            ExpectedActualDeclarationChecker.isOptionalAnnotationClass(function.descriptor.constructedClass)
+            ExpectedActualDeclarationChecker.isOptionalAnnotationClass(function.wrappedDescriptor.constructedClass)
         ) {
             return
         }

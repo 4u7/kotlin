@@ -39,7 +39,7 @@ class IrLazyTypeParameter(
         symbol.bind(this)
     }
 
-    override val descriptor get() = symbol.descriptor
+    override val wrappedDescriptor get() = symbol.wrappedDescriptor
     override val initialDescriptor get() = symbol.initialDescriptor
 
     override val superTypes: MutableList<IrType> by lazy {

@@ -25,7 +25,6 @@ import org.jetbrains.kotlin.ir.expressions.impl.IrSetVariableImpl
 import org.jetbrains.kotlin.ir.symbols.IrValueSymbol
 import org.jetbrains.kotlin.ir.symbols.IrVariableSymbol
 import org.jetbrains.kotlin.ir.types.IrType
-import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.utils.addToStdlib.assertedCast
 
 class VariableLValue(
@@ -49,7 +48,7 @@ class VariableLValue(
         IrSetVariableImpl(
             startOffset, endOffset,
             context.irBuiltIns.unitType,
-            symbol.assertedCast<IrVariableSymbol> { "Not a variable: ${symbol.descriptor}" },
+            symbol.assertedCast<IrVariableSymbol> { "Not a variable: ${symbol.wrappedDescriptor}" },
             irExpression, origin
         )
 

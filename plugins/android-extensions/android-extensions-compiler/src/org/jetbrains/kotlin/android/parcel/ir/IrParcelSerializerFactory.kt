@@ -209,7 +209,7 @@ class IrParcelSerializerFactory(symbols: AndroidSymbols) {
                 // for writeToParcel/createFromParcel. For Java classes (or compiled Kotlin classes annotated with
                 // @Parcelize), we'll have a field in the class itself. Finally, with Parcelable instances which were
                 // manually implemented in Kotlin, we'll instead have an @JvmField property getter in the companion object.
-                return if (classifier.modality == Modality.FINAL && classifier.descriptor.source is PsiSourceElement
+                return if (classifier.modality == Modality.FINAL && classifier.wrappedDescriptor.source is PsiSourceElement
                     && (classifier.isParcelize || classifier.hasCreatorField)
                 ) {
                     wrapNullableSerializerIfNeeded(irType, IrEfficientParcelableParcelSerializer(classifier))

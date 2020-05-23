@@ -309,7 +309,7 @@ interface IrTypeSystemContext : TypeSystemContext, TypeSystemCommonSuperTypesCon
 
     override fun KotlinTypeMarker.getAnnotationFirstArgumentValue(fqName: FqName): Any? =
         (this as? IrType)?.annotations?.firstOrNull { annotation ->
-            annotation.symbol.owner.parentAsClass.descriptor.fqNameSafe == fqName
+            annotation.symbol.owner.parentAsClass.wrappedDescriptor.fqNameSafe == fqName
         }?.run {
             if (valueArgumentsCount > 0) (getValueArgument(0) as? IrConst<*>)?.value else null
         }
@@ -346,12 +346,12 @@ interface IrTypeSystemContext : TypeSystemContext, TypeSystemCommonSuperTypesCon
 
     override fun TypeConstructorMarker.getPrimitiveType(): PrimitiveType? {
         // TODO: get rid of descriptor
-        return KotlinBuiltIns.getPrimitiveType((this as IrClassifierSymbol).descriptor as ClassDescriptor)
+        return KotlinBuiltIns.getPrimitiveType((this as IrClassifierSymbol).wrappedDescriptor as ClassDescriptor)
     }
 
     override fun TypeConstructorMarker.getPrimitiveArrayType(): PrimitiveType? {
         // TODO: get rid of descriptor
-        return KotlinBuiltIns.getPrimitiveArrayType((this as IrClassifierSymbol).descriptor as ClassDescriptor)
+        return KotlinBuiltIns.getPrimitiveArrayType((this as IrClassifierSymbol).wrappedDescriptor as ClassDescriptor)
     }
 
     override fun TypeConstructorMarker.isUnderKotlinPackage(): Boolean {

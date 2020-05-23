@@ -476,7 +476,7 @@ class Fir2IrDeclarationStorage(
                     isFakeOverride = updatedOrigin == IrDeclarationOrigin.FAKE_OVERRIDE,
                     isOperator = simpleFunction?.isOperator == true
                 ).apply {
-                    metadata = FirMetadataSource.Function(function, descriptor)
+                    metadata = FirMetadataSource.Function(function, wrappedDescriptor)
                     enterScope(this)
                     bindAndDeclareParameters(
                         function, irParent,
@@ -512,7 +512,7 @@ class Fir2IrDeclarationStorage(
         irParent: IrClass
     ): IrAnonymousInitializer {
         return anonymousInitializer.convertWithOffsets { startOffset, endOffset ->
-            symbolTable.declareAnonymousInitializer(startOffset, endOffset, IrDeclarationOrigin.DEFINED, irParent.descriptor).apply {
+            symbolTable.declareAnonymousInitializer(startOffset, endOffset, IrDeclarationOrigin.DEFINED, irParent.wrappedDescriptor).apply {
                 this.parent = irParent
                 initializerCache[anonymousInitializer] = this
             }
@@ -545,7 +545,7 @@ class Fir2IrDeclarationStorage(
                     constructor.returnTypeRef.toIrType(),
                     isInline = false, isExternal = false, isPrimary = isPrimary, isExpect = false
                 ).apply {
-                    metadata = FirMetadataSource.Function(constructor, descriptor)
+                    metadata = FirMetadataSource.Function(constructor, wrappedDescriptor)
                     enterScope(this)
                     bindAndDeclareParameters(constructor, irParent, isStatic = false)
                     leaveScope(this)
@@ -587,7 +587,7 @@ class Fir2IrDeclarationStorage(
         val signature = signatureComposer.composeAccessorSignature(property, isSetter)
         return declareIrAccessor(
             signature,
-            (correspondingProperty.descriptor as? WrappedPropertyDescriptorWithContainerSource)?.containerSource,
+            (correspondingProperty.wrappedDescriptor as? WrappedPropertyDescriptorWithContainerSource)?.containerSource,
             isGetter = !isSetter
         ) { symbol ->
             val accessorReturnType = if (isSetter) irBuiltIns.unitType else propertyType
@@ -601,7 +601,7 @@ class Fir2IrDeclarationStorage(
                 isOperator = false
             ).apply {
                 if (propertyAccessor != null) {
-                    metadata = FirMetadataSource.Function(propertyAccessor, descriptor)
+                    metadata = FirMetadataSource.Function(propertyAccessor, wrappedDescriptor)
                 }
                 with(classifierStorage) {
                     setTypeParameters(
@@ -708,7 +708,7 @@ class Fir2IrDeclarationStorage(
                     isExpect = property.isExpect,
                     isFakeOverride = origin == IrDeclarationOrigin.FAKE_OVERRIDE
                 ).apply {
-                    metadata = FirMetadataSource.Variable(property, descriptor)
+                    metadata = FirMetadataSource.Variable(property, wrappedDescriptor)
                     enterScope(this)
                     if (irParent != null) {
                         parent = irParent
@@ -724,7 +724,7 @@ class Fir2IrDeclarationStorage(
                             property.isVar && setter is FirDefaultPropertySetter
                         ) {
                             backingField = createBackingField(
-                                property, IrDeclarationOrigin.PROPERTY_BACKING_FIELD, descriptor,
+                                property, IrDeclarationOrigin.PROPERTY_BACKING_FIELD, wrappedDescriptor,
                                 property.fieldVisibility, property.name, property.isVal, initializer,
                                 thisReceiverOwner, type
                             ).also { field ->
@@ -736,7 +736,7 @@ class Fir2IrDeclarationStorage(
                             }
                         } else if (delegate != null) {
                             backingField = createBackingField(
-                                property, IrDeclarationOrigin.PROPERTY_DELEGATE, descriptor,
+                                property, IrDeclarationOrigin.PROPERTY_DELEGATE, wrappedDescriptor,
                                 property.fieldVisibility, Name.identifier("${property.name}\$delegate"), true, delegate,
                                 thisReceiverOwner
                             )

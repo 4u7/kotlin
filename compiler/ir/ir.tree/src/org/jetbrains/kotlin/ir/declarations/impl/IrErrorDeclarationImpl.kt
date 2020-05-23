@@ -26,9 +26,9 @@ import org.jetbrains.kotlin.ir.visitors.IrElementVisitor
 class IrErrorDeclarationImpl(
     startOffset: Int,
     endOffset: Int,
-    override val descriptor: DeclarationDescriptor
+    override val wrappedDescriptor: DeclarationDescriptor
 ) : IrDeclarationBase<ErrorCarrier>(startOffset, endOffset, IrDeclarationOrigin.DEFINED), IrErrorDeclaration, ErrorCarrier {
-    override val initialDescriptor get() = descriptor
+    override val initialDescriptor get() = wrappedDescriptor
 
     override fun <R, D> accept(visitor: IrElementVisitor<R, D>, data: D): R {
         return visitor.visitErrorDeclaration(this, data)

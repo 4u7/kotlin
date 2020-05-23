@@ -97,7 +97,7 @@ private class AndroidIrTransformer(val extension: AndroidIrExtension, val plugin
     override fun visitClassNew(declaration: IrClass): IrStatement {
         if (!declaration.isClass && !declaration.isObject)
             return super.visitClassNew(declaration)
-        val containerOptions = ContainerOptionsProxy.create(declaration.descriptor)
+        val containerOptions = ContainerOptionsProxy.create(declaration.wrappedDescriptor)
         if ((containerOptions.cache ?: extension.getGlobalCacheImpl(declaration)) == CacheImplementation.NO_CACHE)
             return super.visitClassNew(declaration)
         if (containerOptions.containerType == AndroidContainerType.LAYOUT_CONTAINER && !extension.isExperimental(declaration))
@@ -118,12 +118,12 @@ private class AndroidIrTransformer(val extension: AndroidIrExtension, val plugin
     }
 
     override fun visitCall(expression: IrCall): IrExpression {
-        if (expression.symbol.descriptor is AndroidSyntheticFunction) {
+        if (expression.symbol.wrappedDescriptor is AndroidSyntheticFunction) {
             // TODO actually call the appropriate CLEAR_CACHE_METHOD_NAME-named function
             return IrBlockImpl(expression.startOffset, expression.endOffset, pluginContext.irBuiltIns.unitType)
         }
 
-        val resource = (expression.symbol.descriptor as? PropertyGetterDescriptor)?.correspondingProperty as? AndroidSyntheticProperty
+        val resource = (expression.symbol.wrappedDescriptor as? PropertyGetterDescriptor)?.correspondingProperty as? AndroidSyntheticProperty
             ?: return super.visitFunctionAccess(expression)
         val packageFragment = (resource as PropertyDescriptor).containingDeclaration as? AndroidSyntheticPackageFragmentDescriptor
             ?: return super.visitFunctionAccess(expression)
@@ -135,7 +135,7 @@ private class AndroidIrTransformer(val extension: AndroidIrExtension, val plugin
         val field = createField(packageFqName.child("R\$id").child(resource.name), pluginContext.irBuiltIns.intType)
         val resourceId = IrGetFieldImpl(expression.startOffset, expression.endOffset, field.symbol, field.type)
 
-        val containerType = ContainerOptionsProxy.create(receiverClass.descriptor).containerType
+        val containerType = ContainerOptionsProxy.create(receiverClass.wrappedDescriptor).containerType
         val result = if (expression.type.classifierOrNull?.isFragment == true) {
             // this.get[Support]FragmentManager().findFragmentById(R$id.<name>)
             val appPackageFqName = when (containerType) {

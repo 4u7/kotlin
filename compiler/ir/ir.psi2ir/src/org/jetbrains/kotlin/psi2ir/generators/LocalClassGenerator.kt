@@ -51,7 +51,7 @@ class LocalClassGenerator(statementGenerator: StatementGenerator) : StatementGen
         irBlock.statements.add(irClass)
 
         val objectConstructor = irClass.initialDescriptor.unsubstitutedPrimaryConstructor
-            ?: throw AssertionError("Object literal should have a primary constructor: ${irClass.descriptor}")
+            ?: throw AssertionError("Object literal should have a primary constructor: ${irClass.wrappedDescriptor}")
         assert(objectConstructor.dispatchReceiverParameter == null) {
             "Object literal constructor should have no dispatch receiver parameter: $objectConstructor"
         }

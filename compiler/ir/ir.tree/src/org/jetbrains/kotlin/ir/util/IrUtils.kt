@@ -36,7 +36,7 @@ import org.jetbrains.kotlin.utils.addToStdlib.safeAs
  */
 fun IrMemberAccessExpression.getArguments(): List<Pair<ParameterDescriptor, IrExpression>> {
     val res = mutableListOf<Pair<ParameterDescriptor, IrExpression>>()
-    val descriptor = symbol.descriptor as CallableDescriptor
+    val descriptor = symbol.wrappedDescriptor as CallableDescriptor
 
     // TODO: ensure the order below corresponds to the one defined in Kotlin specs.
 
@@ -75,7 +75,7 @@ fun IrFunctionAccessExpression.getArgumentsWithSymbols(): List<Pair<IrValueParam
     }
 
     irFunction.valueParameters.forEach {
-        val arg = getValueArgument(it.descriptor as ValueParameterDescriptor)
+        val arg = getValueArgument(it.wrappedDescriptor as ValueParameterDescriptor)
         if (arg != null) {
             res += (it.symbol to arg)
         }
@@ -122,7 +122,7 @@ fun IrMemberAccessExpression.getArgumentsWithIr(): List<Pair<IrValueParameter, I
  * Sets arguments that are specified by given mapping of parameters.
  */
 fun IrMemberAccessExpression.addArguments(args: Map<ParameterDescriptor, IrExpression>) {
-    val descriptor = symbol.descriptor as CallableDescriptor
+    val descriptor = symbol.wrappedDescriptor as CallableDescriptor
     descriptor.dispatchReceiverParameter?.let {
         val arg = args[it]
         if (arg != null) {
@@ -191,7 +191,7 @@ fun IrExpression.coerceToUnitIfNeeded(valueType: IrType, irBuiltIns: IrBuiltIns)
 }
 
 fun IrMemberAccessExpression.usesDefaultArguments(): Boolean =
-    (symbol.descriptor as CallableDescriptor).valueParameters.any { this.getValueArgument(it) == null }
+    (symbol.wrappedDescriptor as CallableDescriptor).valueParameters.any { this.getValueArgument(it) == null }
 
 val DeclarationDescriptorWithSource.startOffset: Int? get() = (this.source as? PsiSourceElement)?.psi?.startOffset
 val DeclarationDescriptorWithSource.endOffset: Int? get() = (this.source as? PsiSourceElement)?.psi?.endOffset
@@ -296,12 +296,12 @@ tailrec fun IrElement.getPackageFragment(): IrPackageFragment? {
 
 fun IrAnnotationContainer.getAnnotation(name: FqName): IrConstructorCall? =
     annotations.find {
-        it.symbol.owner.parentAsClass.descriptor.fqNameSafe == name
+        it.symbol.owner.parentAsClass.wrappedDescriptor.fqNameSafe == name
     }
 
 fun IrAnnotationContainer.hasAnnotation(name: FqName) =
     annotations.any {
-        it.symbol.owner.parentAsClass.descriptor.fqNameSafe == name
+        it.symbol.owner.parentAsClass.wrappedDescriptor.fqNameSafe == name
     }
 
 fun IrAnnotationContainer.hasAnnotation(symbol: IrClassSymbol) =
@@ -367,7 +367,7 @@ fun IrValueParameter.hasDefaultValue(): Boolean = DFS.ifAny(
 )
 
 fun IrValueParameter.copy(newDescriptor: ParameterDescriptor): IrValueParameter {
-    assert(this.descriptor.type == newDescriptor.type)
+    assert(this.wrappedDescriptor.type == newDescriptor.type)
 
     return IrValueParameterImpl(
         startOffset,

@@ -15,7 +15,7 @@ interface IrTypeAlias :
     IrDeclarationWithVisibility,
     IrTypeParametersContainer {
 
-    override val descriptor: TypeAliasDescriptor
+    override val wrappedDescriptor: TypeAliasDescriptor
     override val initialDescriptor: TypeAliasDescriptor
     val isActual: Boolean
     val expandedType: IrType

@@ -5,17 +5,7 @@
 
 package org.jetbrains.kotlin.ir.symbols
 
-import org.jetbrains.kotlin.descriptors.ClassDescriptor
-import org.jetbrains.kotlin.descriptors.ClassifierDescriptor
-import org.jetbrains.kotlin.ir.declarations.IrClass
-import org.jetbrains.kotlin.ir.declarations.IrDeclarationWithName
-import org.jetbrains.kotlin.ir.declarations.IrPackageFragment
-import org.jetbrains.kotlin.ir.declarations.IrSymbolOwner
 import org.jetbrains.kotlin.ir.symbols.impl.IrPublicSymbolBase
-import org.jetbrains.kotlin.ir.util.isLocalClass
-import org.jetbrains.kotlin.name.FqName
-import org.jetbrains.kotlin.resolve.DescriptorUtils
-import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 
 interface IrClassifierEqualityChecker {
     fun areEqual(left: IrClassifierSymbol, right: IrClassifierSymbol): Boolean
@@ -34,7 +24,7 @@ object SignatureEqualityChecker : IrClassifierEqualityChecker {
 
     override fun getHashCode(symbol: IrClassifierSymbol): Int {
         if (symbol !is IrPublicSymbolBase<*>) {
-            return symbol.descriptor.hashCode()
+            return symbol.wrappedDescriptor.hashCode()
         }
         return symbol.signature.hashCode()
     }

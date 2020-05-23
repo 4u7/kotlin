@@ -57,7 +57,7 @@ abstract class AbstractClosureAnnotator : IrElementVisitorVoid {
     }
 
     override fun visitClass(declaration: IrClass) {
-        val classDescriptor = declaration.descriptor
+        val classDescriptor = declaration.wrappedDescriptor
         val closureBuilder = ClosureBuilder(classDescriptor)
 
         closuresStack.push(closureBuilder)
@@ -74,7 +74,7 @@ abstract class AbstractClosureAnnotator : IrElementVisitorVoid {
     }
 
     override fun visitFunction(declaration: IrFunction) {
-        val functionDescriptor = declaration.descriptor
+        val functionDescriptor = declaration.wrappedDescriptor
         val closureBuilder = ClosureBuilder(functionDescriptor)
 
         closuresStack.push(closureBuilder)
@@ -98,7 +98,7 @@ abstract class AbstractClosureAnnotator : IrElementVisitorVoid {
     override fun visitVariableAccess(expression: IrValueAccessExpression) {
         val closureBuilder = closuresStack.peek() ?: return
 
-        val variableDescriptor = expression.symbol.descriptor
+        val variableDescriptor = expression.symbol.wrappedDescriptor
         if (variableDescriptor.containingDeclaration != closureBuilder.owner) {
             closureBuilder.capturedValues.add(variableDescriptor)
         }

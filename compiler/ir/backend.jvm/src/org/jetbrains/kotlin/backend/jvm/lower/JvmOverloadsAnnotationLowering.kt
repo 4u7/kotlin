@@ -121,7 +121,7 @@ private class JvmOverloadsAnnotationLowering(val context: JvmBackendContext) : C
     private fun generateWrapperHeader(oldFunction: IrFunction, numDefaultParametersToExpect: Int): IrFunction {
         val res = when (oldFunction) {
             is IrConstructor -> {
-                val descriptor = WrappedClassConstructorDescriptor(oldFunction.descriptor.annotations)
+                val descriptor = WrappedClassConstructorDescriptor(oldFunction.wrappedDescriptor.annotations)
                 IrConstructorImpl(
                     UNDEFINED_OFFSET, UNDEFINED_OFFSET,
                     JvmLoweredDeclarationOrigin.JVM_OVERLOADS_WRAPPER,
@@ -138,7 +138,7 @@ private class JvmOverloadsAnnotationLowering(val context: JvmBackendContext) : C
                 }
             }
             is IrSimpleFunction -> {
-                val descriptor = WrappedSimpleFunctionDescriptor(oldFunction.descriptor.annotations)
+                val descriptor = WrappedSimpleFunctionDescriptor(oldFunction.wrappedDescriptor.annotations)
                 val modality =
                     if (context.state.languageVersionSettings.supportsFeature(LanguageFeature.GenerateJvmOverloadsAsFinal)) Modality.FINAL
                     else oldFunction.modality

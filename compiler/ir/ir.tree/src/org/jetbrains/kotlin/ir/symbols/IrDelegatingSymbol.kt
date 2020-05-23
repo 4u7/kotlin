@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.ir.util.IdSignature
 abstract class IrDelegatingSymbol<S : IrBindableSymbol<D, B>, B : IrSymbolOwner, D : DeclarationDescriptor>(var delegate: S) :
     IrBindableSymbol<D, B> {
     override val owner: B get() = delegate.owner
-    override val descriptor: D get() = delegate.descriptor
+    override val wrappedDescriptor: D get() = delegate.wrappedDescriptor
     override val initialDescriptor: D get() = delegate.initialDescriptor
     override val isBound: Boolean get() = delegate.isBound
     override val isPublicApi: Boolean

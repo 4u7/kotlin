@@ -49,7 +49,7 @@ private class DescriptorlessIrFileSymbol : IrFileSymbol {
         _owner = owner
     }
 
-    override val descriptor: PackageFragmentDescriptor
+    override val wrappedDescriptor: PackageFragmentDescriptor
         get() = error("Operation is unsupported")
 
     override val initialDescriptor: PackageFragmentDescriptor

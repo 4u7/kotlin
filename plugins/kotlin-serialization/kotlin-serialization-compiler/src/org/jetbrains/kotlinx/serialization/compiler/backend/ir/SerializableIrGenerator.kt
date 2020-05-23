@@ -33,7 +33,7 @@ class SerializableIrGenerator(
     val irClass: IrClass,
     override val compilerContext: SerializationPluginContext,
     bindingContext: BindingContext
-) : SerializableCodegen(irClass.descriptor, bindingContext), IrBuilderExtension {
+) : SerializableCodegen(irClass.wrappedDescriptor, bindingContext), IrBuilderExtension {
 
 
 
@@ -104,7 +104,7 @@ class SerializableIrGenerator(
             val serialDescs = serializableProperties.map { it.descriptor }.toSet()
             irClass.declarations.asSequence()
                 .filterIsInstance<IrProperty>()
-                .filter { it.descriptor !in serialDescs }
+                .filter { it.wrappedDescriptor !in serialDescs }
                 .filter { it.backingField != null }
                 .mapNotNull { prop -> transformFieldInitializer(prop.backingField!!)?.let { prop to it } }
                 .forEach { (prop, expr) -> +irSetField(irGet(thiz), prop.backingField!!, expr) }
@@ -149,7 +149,7 @@ class SerializableIrGenerator(
     ): Int {
         check(superClass.isInternalSerializable)
         val superCtorRef = serializableSyntheticConstructor(superClass)
-        val superProperties = bindingContext.serializablePropertiesFor(superClass.descriptor).serializableProperties
+        val superProperties = bindingContext.serializablePropertiesFor(superClass.initialDescriptor).serializableProperties
         val superSlots = superProperties.bitMaskSlotCount()
         val arguments = allValueParameters.subList(0, superSlots) +
                     allValueParameters.subList(propertiesStart, propertiesStart + superProperties.size) +
@@ -176,7 +176,7 @@ class SerializableIrGenerator(
             context: SerializationPluginContext,
             bindingContext: BindingContext
         ) {
-            val serializableClass = irClass.descriptor
+            val serializableClass = irClass.wrappedDescriptor
 
             if (serializableClass.isInternalSerializable) {
                 SerializableIrGenerator(irClass, context, bindingContext).generate()

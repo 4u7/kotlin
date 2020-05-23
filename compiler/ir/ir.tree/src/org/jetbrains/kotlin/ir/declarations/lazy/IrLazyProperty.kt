@@ -48,7 +48,7 @@ class IrLazyProperty(
         symbol.bind(this)
     }
 
-    override val descriptor = symbol.descriptor
+    override val wrappedDescriptor = symbol.wrappedDescriptor
     override val initialDescriptor = symbol.initialDescriptor
 
     private val hasBackingField: Boolean =

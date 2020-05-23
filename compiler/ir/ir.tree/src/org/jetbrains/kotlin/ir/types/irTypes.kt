@@ -93,7 +93,7 @@ private fun makeKotlinType(
     val kotlinTypeArguments = arguments.mapIndexed { index, it ->
         when (it) {
             is IrTypeProjection -> TypeProjectionImpl(it.variance, it.type.toKotlinType())
-            is IrStarProjection -> StarProjectionImpl((classifier.descriptor as ClassDescriptor).typeConstructor.parameters[index])
+            is IrStarProjection -> StarProjectionImpl((classifier.wrappedDescriptor as ClassDescriptor).typeConstructor.parameters[index])
             else -> error(it)
         }
     }

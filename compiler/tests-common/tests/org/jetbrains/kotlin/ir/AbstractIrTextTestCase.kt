@@ -188,13 +188,13 @@ abstract class AbstractIrTextTestCase : AbstractIrGeneratorTestCase() {
                 }
             }
 
-            val containingDeclarationDescriptor = declaration.descriptor.containingDeclaration
+            val containingDeclarationDescriptor = declaration.wrappedDescriptor.containingDeclaration
             if (containingDeclarationDescriptor != null) {
                 val parent = declaration.parent
                 if (parent is IrDeclaration) {
-                    require(parent.descriptor == containingDeclarationDescriptor) {
-                        "In declaration ${declaration.descriptor}: " +
-                                "Mismatching parent descriptor (${parent.descriptor}) " +
+                    require(parent.wrappedDescriptor == containingDeclarationDescriptor) {
+                        "In declaration ${declaration.wrappedDescriptor}: " +
+                                "Mismatching parent descriptor (${parent.wrappedDescriptor}) " +
                                 "and containing declaration descriptor ($containingDeclarationDescriptor)"
                     }
                 }
@@ -205,7 +205,7 @@ abstract class AbstractIrTextTestCase : AbstractIrGeneratorTestCase() {
             visitDeclaration(declaration)
 
             require((declaration.origin == IrDeclarationOrigin.FAKE_OVERRIDE) == declaration.isFakeOverride) {
-                "${declaration.descriptor}: origin: ${declaration.origin}; isFakeOverride: ${declaration.isFakeOverride}"
+                "${declaration.wrappedDescriptor}: origin: ${declaration.origin}; isFakeOverride: ${declaration.isFakeOverride}"
             }
         }
 
@@ -213,19 +213,19 @@ abstract class AbstractIrTextTestCase : AbstractIrGeneratorTestCase() {
             visitDeclaration(declaration)
 
             require((declaration.origin == IrDeclarationOrigin.FAKE_OVERRIDE) == declaration.isFakeOverride) {
-                "${declaration.descriptor}: origin: ${declaration.origin}; isFakeOverride: ${declaration.isFakeOverride}"
+                "${declaration.wrappedDescriptor}: origin: ${declaration.origin}; isFakeOverride: ${declaration.isFakeOverride}"
             }
         }
 
         override fun visitFunction(declaration: IrFunction) {
             visitDeclaration(declaration)
 
-            val functionDescriptor = declaration.descriptor
+            val functionDescriptor = declaration.wrappedDescriptor
 
             checkTypeParameters(functionDescriptor, declaration, functionDescriptor.typeParameters)
 
             val expectedDispatchReceiver = functionDescriptor.dispatchReceiverParameter
-            val actualDispatchReceiver = declaration.dispatchReceiverParameter?.descriptor
+            val actualDispatchReceiver = declaration.dispatchReceiverParameter?.wrappedDescriptor
             require(expectedDispatchReceiver == actualDispatchReceiver) {
                 "$functionDescriptor: Dispatch receiver parameter mismatch: " +
                         "expected $expectedDispatchReceiver, actual $actualDispatchReceiver"
@@ -233,14 +233,14 @@ abstract class AbstractIrTextTestCase : AbstractIrGeneratorTestCase() {
             }
 
             val expectedExtensionReceiver = functionDescriptor.extensionReceiverParameter
-            val actualExtensionReceiver = declaration.extensionReceiverParameter?.descriptor
+            val actualExtensionReceiver = declaration.extensionReceiverParameter?.wrappedDescriptor
             require(expectedExtensionReceiver == actualExtensionReceiver) {
                 "$functionDescriptor: Extension receiver parameter mismatch: " +
                         "expected $expectedExtensionReceiver, actual $actualExtensionReceiver"
 
             }
 
-            val declaredValueParameters = declaration.valueParameters.map { it.descriptor }
+            val declaredValueParameters = declaration.valueParameters.map { it.wrappedDescriptor }
             val actualValueParameters = functionDescriptor.valueParameters
             if (declaredValueParameters.size != actualValueParameters.size) {
                 error("$functionDescriptor: Value parameters mismatch: $declaredValueParameters != $actualValueParameters")
@@ -257,7 +257,7 @@ abstract class AbstractIrTextTestCase : AbstractIrGeneratorTestCase() {
             visitFunction(declaration)
 
             require((declaration.origin == IrDeclarationOrigin.FAKE_OVERRIDE) == declaration.isFakeOverride) {
-                "${declaration.descriptor}: origin: ${declaration.origin}; isFakeOverride: ${declaration.isFakeOverride}"
+                "${declaration.wrappedDescriptor}: origin: ${declaration.origin}; isFakeOverride: ${declaration.isFakeOverride}"
             }
         }
 
@@ -304,7 +304,7 @@ abstract class AbstractIrTextTestCase : AbstractIrGeneratorTestCase() {
         override fun visitClass(declaration: IrClass) {
             visitDeclaration(declaration)
 
-            checkTypeParameters(declaration.descriptor, declaration, declaration.descriptor.declaredTypeParameters)
+            checkTypeParameters(declaration.wrappedDescriptor, declaration, declaration.wrappedDescriptor.declaredTypeParameters)
         }
 
         private fun checkTypeParameters(
@@ -312,7 +312,7 @@ abstract class AbstractIrTextTestCase : AbstractIrGeneratorTestCase() {
             declaration: IrTypeParametersContainer,
             expectedTypeParameters: List<TypeParameterDescriptor>
         ) {
-            val declaredTypeParameters = declaration.typeParameters.map { it.descriptor }
+            val declaredTypeParameters = declaration.typeParameters.map { it.wrappedDescriptor }
 
             if (declaredTypeParameters.size != expectedTypeParameters.size) {
                 error("$descriptor: Type parameters mismatch: $declaredTypeParameters != $expectedTypeParameters")

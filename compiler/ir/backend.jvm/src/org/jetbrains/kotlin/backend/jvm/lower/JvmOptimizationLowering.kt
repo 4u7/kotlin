@@ -35,7 +35,7 @@ class JvmOptimizationLowering(val context: JvmBackendContext) : FileLoweringPass
     companion object {
         fun isNegation(expression: IrExpression, context: JvmBackendContext): Boolean =
             expression is IrCall &&
-                    context.state.intrinsics.getIntrinsic(expression.symbol.descriptor) is Not
+                    context.state.intrinsics.getIntrinsic(expression.symbol.wrappedDescriptor) is Not
     }
 
     private val IrFunction.isObjectEquals

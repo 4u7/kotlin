@@ -107,11 +107,11 @@ object CheckDeclarationParentsVisitor : IrElementVisitor<Unit, IrDeclarationPare
         val parent = try {
             declaration.parent
         } catch (e: Throwable) {
-            error("$declaration for ${declaration.descriptor} has no parent")
+            error("$declaration for ${declaration.wrappedDescriptor} has no parent")
         }
 
         if (parent != expectedParent) {
-            error("$declaration for ${declaration.descriptor} has unexpected parent $parent")
+            error("$declaration for ${declaration.wrappedDescriptor} has unexpected parent $parent")
         }
     }
 }

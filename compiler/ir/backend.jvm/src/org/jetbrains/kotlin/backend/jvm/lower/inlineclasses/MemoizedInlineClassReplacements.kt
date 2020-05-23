@@ -179,7 +179,7 @@ class MemoizedInlineClassReplacements(private val mangleReturnTypes: Boolean) {
         replacementOrigin: IrDeclarationOrigin,
         noFakeOverride: Boolean = false,
         body: IrFunctionImpl.() -> Unit
-    ) = buildFunWithDescriptorForInlining(function.descriptor) {
+    ) = buildFunWithDescriptorForInlining(function.wrappedDescriptor) {
         updateFrom(function)
         origin = if (function.origin == IrDeclarationOrigin.GENERATED_INLINE_CLASS_MEMBER) {
             JvmLoweredDeclarationOrigin.INLINE_CLASS_GENERATED_IMPL_METHOD
@@ -202,7 +202,7 @@ class MemoizedInlineClassReplacements(private val mangleReturnTypes: Boolean) {
             val propertySymbol = function.correspondingPropertySymbol
             if (propertySymbol != null) {
                 val property = propertyMap.getOrPut(propertySymbol) {
-                    buildProperty(propertySymbol.descriptor) {
+                    buildProperty(propertySymbol.wrappedDescriptor) {
                         name = propertySymbol.owner.name
                         updateFrom(propertySymbol.owner)
                     }.apply {

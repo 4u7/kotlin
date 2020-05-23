@@ -34,7 +34,7 @@ private class VarargTransformer(
 
         // TODO: Use symbols when builtins symbol table is fixes
         val primitiveType = context.intrinsics.primitiveArrays
-            .mapKeys { it.key.descriptor }[type.classifierOrNull?.descriptor]
+            .mapKeys { it.key.wrappedDescriptor }[type.classifierOrNull?.wrappedDescriptor]
 
         val intrinsic =
             if (primitiveType != null)

@@ -74,7 +74,7 @@ class IrClassImpl(
         symbol.bind(this)
     }
 
-    override val descriptor: ClassDescriptor get() = symbol.descriptor
+    override val wrappedDescriptor: ClassDescriptor get() = symbol.wrappedDescriptor
     override val initialDescriptor: ClassDescriptor get() = symbol.initialDescriptor
 
     override var visibilityField: Visibility = visibility

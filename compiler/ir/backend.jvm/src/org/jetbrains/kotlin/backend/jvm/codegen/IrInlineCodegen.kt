@@ -41,7 +41,7 @@ class IrInlineCodegen(
     reifiedTypeInliner: ReifiedTypeInliner<IrType>
 ) :
     InlineCodegen<ExpressionCodegen>(
-        codegen, state, function.descriptor, methodOwner, signature, typeParameterMappings, sourceCompiler, reifiedTypeInliner
+        codegen, state, function.wrappedDescriptor, methodOwner, signature, typeParameterMappings, sourceCompiler, reifiedTypeInliner
     ),
     IrCallGenerator {
 
@@ -151,7 +151,7 @@ class IrInlineCodegen(
     ) {
         val element = codegen.context.psiSourceManager.findPsiElement(expression, codegen.irFunction)
             ?: codegen.context.psiSourceManager.findPsiElement(codegen.irFunction)
-        if (!state.globalInlineContext.enterIntoInlining(expression.symbol.owner.suspendFunctionOriginal().descriptor, element)) {
+        if (!state.globalInlineContext.enterIntoInlining(expression.symbol.owner.suspendFunctionOriginal().wrappedDescriptor, element)) {
             val message = "Call is a part of inline call cycle: ${expression.render()}"
             AsmUtil.genThrow(codegen.v, "java/lang/UnsupportedOperationException", message)
             return
@@ -245,11 +245,11 @@ class IrExpressionLambdaImpl(
 
     override val invokeMethodDescriptor: FunctionDescriptor =
         // Need the descriptor without captured parameters here.
-        (function.descriptor as? WrappedSimpleFunctionDescriptor)?.originalDescriptor ?: function.descriptor
+        (function.wrappedDescriptor as? WrappedSimpleFunctionDescriptor)?.originalDescriptor ?: function.wrappedDescriptor
 
     override val hasDispatchReceiver: Boolean = false
 
-    override fun getInlineSuspendLambdaViewDescriptor(): FunctionDescriptor = function.descriptor
+    override fun getInlineSuspendLambdaViewDescriptor(): FunctionDescriptor = function.wrappedDescriptor
 
     override fun isCapturedSuspend(desc: CapturedParamDesc): Boolean =
         capturedParameters[desc]?.let { it.isInlineParameter() && it.type.isSuspendFunctionTypeOrSubtype() } == true
@@ -261,7 +261,7 @@ class IrDefaultLambda(
     private val irValueParameter: IrValueParameter,
     offset: Int,
     needReification: Boolean
-) : DefaultLambda(lambdaClassType, capturedArgs, irValueParameter.descriptor as ValueParameterDescriptor, offset, needReification) {
+) : DefaultLambda(lambdaClassType, capturedArgs, irValueParameter.wrappedDescriptor as ValueParameterDescriptor, offset, needReification) {
 
     override fun mapAsmSignature(sourceCompiler: SourceCompilerForInline): Method {
         val invoke =

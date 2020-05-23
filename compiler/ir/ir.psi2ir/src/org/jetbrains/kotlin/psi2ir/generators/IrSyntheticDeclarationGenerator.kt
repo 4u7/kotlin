@@ -34,12 +34,12 @@ class IrSyntheticDeclarationGenerator(context: GeneratorContext) : IrElementVisi
     }
 
     private fun ensureMemberScope(irClass: IrClass) {
-        val declaredDescriptors = irClass.declarations.map { it.descriptor }
-        val contributedDescriptors = collectDescriptors(irClass.descriptor)
+        val declaredDescriptors = irClass.declarations.map { it.initialDescriptor }
+        val contributedDescriptors = collectDescriptors(irClass.initialDescriptor)
 
         contributedDescriptors.removeAll(declaredDescriptors)
 
-        symbolTable.withScope(irClass.descriptor) {
+        symbolTable.withScope(irClass.initialDescriptor) {
             contributedDescriptors.forEach { it.accept(descriptorGenerator, irClass) }
         }
     }

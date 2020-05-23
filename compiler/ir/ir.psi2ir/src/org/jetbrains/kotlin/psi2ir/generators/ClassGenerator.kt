@@ -89,7 +89,7 @@ class ClassGenerator(
                 classDescriptor,
                 context.symbolTable.nameProvider.nameForDeclaration(classDescriptor),
                 visibility = visibility, modality = modality,
-            ).apply { metadata = MetadataSource.Class(it.descriptor) }
+            ).apply { metadata = MetadataSource.Class(it.initialDescriptor) }
         }.buildWithScope { irClass ->
             declarationGenerator.generateGlobalTypeParametersDeclarations(irClass, classDescriptor.declaredTypeParameters)
 

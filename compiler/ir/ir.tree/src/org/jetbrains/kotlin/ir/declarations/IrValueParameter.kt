@@ -23,7 +23,7 @@ import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformer
 
 interface IrValueParameter : IrValueDeclaration, IrSymbolDeclaration<IrValueParameterSymbol> {
-    override val descriptor: ParameterDescriptor
+    override val wrappedDescriptor: ParameterDescriptor
     override val initialDescriptor: ParameterDescriptor
 
     val index: Int

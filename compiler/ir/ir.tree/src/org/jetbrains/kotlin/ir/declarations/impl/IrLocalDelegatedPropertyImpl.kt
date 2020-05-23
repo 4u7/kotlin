@@ -44,8 +44,8 @@ class IrLocalDelegatedPropertyImpl(
         symbol.bind(this)
     }
 
-    override val descriptor: VariableDescriptorWithAccessors
-        get() = symbol.descriptor
+    override val wrappedDescriptor: VariableDescriptorWithAccessors
+        get() = symbol.wrappedDescriptor
 
     override val initialDescriptor: VariableDescriptorWithAccessors
         get() = symbol.initialDescriptor

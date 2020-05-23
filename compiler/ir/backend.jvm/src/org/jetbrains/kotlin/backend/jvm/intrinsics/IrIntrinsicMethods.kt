@@ -266,7 +266,7 @@ class IrIntrinsicMethods(val irBuiltIns: IrBuiltIns, val symbols: JvmSymbols) {
             operator: KtSingleValueToken
         ): List<Pair<Key, PrimitiveComparison>> =
             typeToIrFun.map { (type, irFunSymbol) ->
-                irFunSymbol.toKey()!! to PrimitiveComparison(type.descriptor.defaultType, operator)
+                irFunSymbol.toKey()!! to PrimitiveComparison(type.wrappedDescriptor.defaultType, operator)
             }
     }
 }

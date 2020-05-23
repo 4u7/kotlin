@@ -1360,7 +1360,7 @@ abstract class IrFileDeserializer(val logger: LoggingContext, val builtIns: IrBu
             DECLARATOR_NOT_SET -> error("Declaration deserialization not implemented: ${proto.declaratorCase}")
         }
 
-        logger.log { "### Deserialized declaration: ${declaration.descriptor} -> ${ir2string(declaration)}" }
+        logger.log { "### Deserialized declaration: ${declaration.wrappedDescriptor} -> ${ir2string(declaration)}" }
 
         return declaration
     }

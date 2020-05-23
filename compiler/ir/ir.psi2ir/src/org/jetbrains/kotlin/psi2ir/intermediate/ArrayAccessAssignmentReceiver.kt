@@ -205,7 +205,7 @@ class ArrayAccessAssignmentReceiver(
             val symbol = expression.symbol
             if (symbol.owner in replacementVars) {
                 throw AssertionError(
-                    "SAM-converted index variable ${symbol.descriptor} is present in get/set calls in non-converted"
+                    "SAM-converted index variable ${symbol.wrappedDescriptor} is present in get/set calls in non-converted"
                 )
             }
             return expression

@@ -23,7 +23,7 @@ import org.jetbrains.kotlin.ir.visitors.IrElementTransformer
 import org.jetbrains.kotlin.types.Variance
 
 interface IrTypeParameter : IrSymbolDeclaration<IrTypeParameterSymbol>, IrDeclarationWithName {
-    override val descriptor: TypeParameterDescriptor
+    override val wrappedDescriptor: TypeParameterDescriptor
     override val initialDescriptor: TypeParameterDescriptor
 
     val variance: Variance

@@ -307,7 +307,7 @@ class ExpressionCodegen(
         // then generate name accordingly.
         val name = if (param.origin == BOUND_RECEIVER_PARAMETER || isReceiver) {
             getNameForReceiverParameter(
-                irFunction.descriptor,
+                irFunction.wrappedDescriptor,
                 state.bindingContext,
                 context.configuration.languageVersionSettings
             )
@@ -405,7 +405,7 @@ class ExpressionCodegen(
                     }
                 }
             }
-            expression.symbol.descriptor is ConstructorDescriptor ->
+            expression.symbol.wrappedDescriptor is ConstructorDescriptor ->
                 throw AssertionError("IrCall with ConstructorDescriptor: ${expression.javaClass.simpleName}")
         }
 

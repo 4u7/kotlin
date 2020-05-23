@@ -211,7 +211,7 @@ internal class ClassMemberGenerator(
                 conversionScope.withParent(this) {
                     declarationStorage.enterScope(this)
                     val backingField = correspondingProperty.backingField
-                    val fieldSymbol = symbolTable.referenceField(correspondingProperty.descriptor)
+                    val fieldSymbol = symbolTable.referenceField(correspondingProperty.wrappedDescriptor)
                     val declaration = this
                     if (backingField != null) {
                         body = IrBlockBodyImpl(

@@ -48,7 +48,7 @@ fun <T : IrElement> IrStatementsBuilder<T>.irTemporary(
 fun <T : IrElement> IrStatementsBuilder<T>.defineTemporary(value: IrExpression, nameHint: String? = null): VariableDescriptor {
     val temporary = scope.createTemporaryVariable(value, nameHint)
     +temporary
-    return temporary.descriptor
+    return temporary.wrappedDescriptor
 }
 
 fun <T : IrElement> IrStatementsBuilder<T>.irTemporaryVarDeclaration(
@@ -75,7 +75,7 @@ fun <T : IrElement> IrStatementsBuilder<T>.irTemporaryVar(
 fun <T : IrElement> IrStatementsBuilder<T>.defineTemporaryVar(value: IrExpression, nameHint: String? = null): VariableDescriptor {
     val temporary = scope.createTemporaryVariable(value, nameHint, isMutable = true)
     +temporary
-    return temporary.descriptor
+    return temporary.wrappedDescriptor
 }
 
 fun IrBuilderWithScope.irExprBody(value: IrExpression) =

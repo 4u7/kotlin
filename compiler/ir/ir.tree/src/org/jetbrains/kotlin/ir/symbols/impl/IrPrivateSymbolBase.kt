@@ -55,7 +55,7 @@ abstract class IrBindableSymbolBase<out D : DeclarationDescriptor, B : IrSymbolO
                 descriptor is ValueParameterDescriptor && isOriginalDescriptor(descriptor.containingDeclaration) ||
                 descriptor == descriptor.original
 
-    override val descriptor: D = when {
+    override val wrappedDescriptor: D = when {
         initialDescriptor is WrappedDeclarationDescriptor<*> -> initialDescriptor
         doWrapDescriptor != null -> doWrapDescriptor(initialDescriptor)
         else -> initialDescriptor
@@ -68,8 +68,8 @@ abstract class IrBindableSymbolBase<out D : DeclarationDescriptor, B : IrSymbolO
     override fun bind(owner: B) {
         if (_owner == null) {
             _owner = owner
-            if (descriptor != initialDescriptor) {
-                (descriptor as? WrappedDeclarationDescriptor<IrDeclaration>)?.bind(owner as IrDeclaration)
+            if (wrappedDescriptor != initialDescriptor) {
+                (wrappedDescriptor as? WrappedDeclarationDescriptor<IrDeclaration>)?.bind(owner as IrDeclaration)
             }
         } else {
             throw IllegalStateException("${javaClass.simpleName} is already bound: ${owner.render()}")
@@ -96,7 +96,7 @@ class IrExternalPackageFragmentSymbolImpl(descriptor: PackageFragmentDescriptor)
 class IrAnonymousInitializerSymbolImpl(descriptor: ClassDescriptor) :
     IrBindableSymbolBase<ClassDescriptor, IrAnonymousInitializer>(descriptor, { d -> WrappedClassDescriptor(d.annotations, d.source) }),
     IrAnonymousInitializerSymbol {
-    constructor(irClassSymbol: IrClassSymbol) : this(irClassSymbol.descriptor) {}
+    constructor(irClassSymbol: IrClassSymbol) : this(irClassSymbol.wrappedDescriptor) {}
 }
 
 class IrClassSymbolImpl(descriptor: ClassDescriptor) :

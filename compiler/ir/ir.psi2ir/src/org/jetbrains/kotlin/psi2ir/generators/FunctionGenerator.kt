@@ -261,7 +261,7 @@ class FunctionGenerator(declarationGenerator: DeclarationGenerator) : Declaratio
                 descriptor = constructorDescriptor,
                 name = context.symbolTable.nameProvider.nameForDeclaration(constructorDescriptor),
             ).apply {
-                metadata = MetadataSource.Function(it.descriptor)
+                metadata = MetadataSource.Function(it.initialDescriptor)
             }
         }.buildWithScope { irConstructor ->
             generateValueParameterDeclarations(irConstructor, ktParametersElement, null)
