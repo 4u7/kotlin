@@ -25,6 +25,7 @@ import org.jetbrains.kotlin.ir.declarations.impl.IrValueParameterImpl
 import org.jetbrains.kotlin.ir.descriptors.WrappedValueParameterDescriptor
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrTypeParameterSymbol
+import org.jetbrains.kotlin.ir.symbols.SignatureEqualityChecker
 import org.jetbrains.kotlin.ir.symbols.impl.IrValueParameterSymbolImpl
 import org.jetbrains.kotlin.ir.types.*
 import org.jetbrains.kotlin.ir.util.*
@@ -161,7 +162,7 @@ internal class CollectionStubMethodLowering(val context: JvmBackendContext) : Cl
     }
 
     private fun Collection<IrType>.findMostSpecificTypeForClass(classifier: IrClassSymbol): IrType {
-        val types = this.filter { it.classifierOrNull == classifier }
+        val types = this.filter { it.classifierOrNull?.let { SignatureEqualityChecker.areEqual(it, classifier) } == true }
         if (types.isEmpty()) error("No supertype of $classifier in $this")
         if (types.size == 1) return types.first()
         // Find the first type in the list such that it's a subtype of every other type in that list
