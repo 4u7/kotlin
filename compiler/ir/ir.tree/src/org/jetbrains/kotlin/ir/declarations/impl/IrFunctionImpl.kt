@@ -171,6 +171,6 @@ class IrFakeOverrideFunctionImpl(
         assert(_symbol == null) { "$this already has symbol _symbol" }
         _symbol = symbol
         symbol.bind(this)
-        (symbol.wrappedDescriptor as? WrappedSimpleFunctionDescriptor)?.bind(this)
+        (symbol.initialDescriptor as? WrappedSimpleFunctionDescriptor)?.bind(this)
     }
 }

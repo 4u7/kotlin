@@ -250,6 +250,6 @@ class IrFakeOverridePropertyImpl(
         assert(_symbol == null) { "$this already has symbol _symbol" }
         _symbol = symbol
         symbol.bind(this)
-        (symbol.wrappedDescriptor as? WrappedPropertyDescriptor)?.bind(this)
+        (symbol.initialDescriptor as? WrappedPropertyDescriptor)?.bind(this)
     }
 }
