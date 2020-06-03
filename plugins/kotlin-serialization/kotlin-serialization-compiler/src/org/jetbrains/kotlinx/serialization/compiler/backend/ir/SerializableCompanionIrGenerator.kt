@@ -32,7 +32,7 @@ class SerializableCompanionIrGenerator(
     val irClass: IrClass,
     override val compilerContext: SerializationPluginContext,
     bindingContext: BindingContext
-) : SerializableCompanionCodegen(irClass.wrappedDescriptor, bindingContext), IrBuilderExtension {
+) : SerializableCompanionCodegen(irClass.initialDescriptor, bindingContext), IrBuilderExtension {
 
     companion object {
         fun generate(

@@ -33,7 +33,7 @@ class SerializableIrGenerator(
     val irClass: IrClass,
     override val compilerContext: SerializationPluginContext,
     bindingContext: BindingContext
-) : SerializableCodegen(irClass.wrappedDescriptor, bindingContext), IrBuilderExtension {
+) : SerializableCodegen(irClass.initialDescriptor, bindingContext), IrBuilderExtension {
 
 
 
@@ -104,7 +104,7 @@ class SerializableIrGenerator(
             val serialDescs = serializableProperties.map { it.descriptor }.toSet()
             irClass.declarations.asSequence()
                 .filterIsInstance<IrProperty>()
-                .filter { it.wrappedDescriptor !in serialDescs }
+                .filter { it.initialDescriptor !in serialDescs }
                 .filter { it.backingField != null }
                 .mapNotNull { prop -> transformFieldInitializer(prop.backingField!!)?.let { prop to it } }
                 .forEach { (prop, expr) -> +irSetField(irGet(thiz), prop.backingField!!, expr) }
