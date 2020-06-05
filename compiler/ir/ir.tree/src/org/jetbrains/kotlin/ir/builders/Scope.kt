@@ -35,7 +35,7 @@ import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.types.KotlinType
 
 class Scope(val scopeOwnerSymbol: IrSymbol) {
-    val scopeOwner: DeclarationDescriptor get() = scopeOwnerSymbol.wrappedDescriptor
+    val scopeOwner: DeclarationDescriptor get() = scopeOwnerSymbol.initialDescriptor
 
     fun getLocalDeclarationParent(): IrDeclarationParent {
         if (!scopeOwnerSymbol.isBound) throw AssertionError("Unbound symbol: $scopeOwner")
