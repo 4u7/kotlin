@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.ir.util
 
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.descriptors.impl.DeclarationDescriptorVisitorEmptyBodies
+import org.jetbrains.kotlin.ir.DescriptorBasedIr
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.declarations.*
@@ -34,6 +35,7 @@ import org.jetbrains.kotlin.utils.addToStdlib.safeAs
  * Binds the arguments explicitly represented in the IR to the parameters of the accessed function.
  * The arguments are to be evaluated in the same order as they appear in the resulting list.
  */
+@DescriptorBasedIr
 fun IrMemberAccessExpression.getArguments(): List<Pair<ParameterDescriptor, IrExpression>> {
     val res = mutableListOf<Pair<ParameterDescriptor, IrExpression>>()
     val descriptor = symbol.descriptor as CallableDescriptor
@@ -52,32 +54,6 @@ fun IrMemberAccessExpression.getArguments(): List<Pair<ParameterDescriptor, IrEx
         val arg = getValueArgument(it.index)
         if (arg != null) {
             res += (it to arg)
-        }
-    }
-
-    return res
-}
-
-/**
- * Binds the arguments explicitly represented in the IR to the parameters of the accessed function.
- * The arguments are to be evaluated in the same order as they appear in the resulting list.
- */
-fun IrFunctionAccessExpression.getArgumentsWithSymbols(): List<Pair<IrValueParameterSymbol, IrExpression>> {
-    val res = mutableListOf<Pair<IrValueParameterSymbol, IrExpression>>()
-    val irFunction = symbol.owner
-
-    dispatchReceiver?.let {
-        res += (irFunction.dispatchReceiverParameter!!.symbol to it)
-    }
-
-    extensionReceiver?.let {
-        res += (irFunction.extensionReceiverParameter!!.symbol to it)
-    }
-
-    irFunction.valueParameters.forEach {
-        val arg = getValueArgument(it.descriptor as ValueParameterDescriptor)
-        if (arg != null) {
-            res += (it.symbol to arg)
         }
     }
 
@@ -121,6 +97,7 @@ fun IrMemberAccessExpression.getArgumentsWithIr(): List<Pair<IrValueParameter, I
 /**
  * Sets arguments that are specified by given mapping of parameters.
  */
+@DescriptorBasedIr
 fun IrMemberAccessExpression.addArguments(args: Map<ParameterDescriptor, IrExpression>) {
     val descriptor = symbol.descriptor as CallableDescriptor
     descriptor.dispatchReceiverParameter?.let {
@@ -145,6 +122,7 @@ fun IrMemberAccessExpression.addArguments(args: Map<ParameterDescriptor, IrExpre
     }
 }
 
+@DescriptorBasedIr
 fun IrMemberAccessExpression.addArguments(args: List<Pair<ParameterDescriptor, IrExpression>>) =
     this.addArguments(args.toMap())
 
@@ -156,14 +134,17 @@ fun IrExpression.isFalseConst() = this is IrConst<*> && this.kind == IrConstKind
 
 fun IrExpression.isIntegerConst(value: Int) = this is IrConst<*> && this.kind == IrConstKind.Int && this.value == value
 
+@OptIn(DescriptorBasedIr::class)
 fun IrExpression.coerceToUnit(builtins: IrBuiltIns): IrExpression {
     val valueType = getKotlinType(this)
     return coerceToUnitIfNeeded(valueType, builtins)
 }
 
+@DescriptorBasedIr
 private fun getKotlinType(irExpression: IrExpression) =
     irExpression.type.toKotlinType()
 
+@DescriptorBasedIr
 fun IrExpression.coerceToUnitIfNeeded(valueType: KotlinType, irBuiltIns: IrBuiltIns): IrExpression {
     return if (KotlinTypeChecker.DEFAULT.isSubtypeOf(valueType, irBuiltIns.unitType.toKotlinType()))
         this
@@ -190,6 +171,7 @@ fun IrExpression.coerceToUnitIfNeeded(valueType: IrType, irBuiltIns: IrBuiltIns)
         )
 }
 
+@DescriptorBasedIr
 fun IrMemberAccessExpression.usesDefaultArguments(): Boolean =
     (symbol.descriptor as CallableDescriptor).valueParameters.any { this.getValueArgument(it) == null }
 
@@ -294,11 +276,13 @@ tailrec fun IrElement.getPackageFragment(): IrPackageFragment? {
     }
 }
 
+@OptIn(DescriptorBasedIr::class)
 fun IrAnnotationContainer.getAnnotation(name: FqName): IrConstructorCall? =
     annotations.find {
         it.symbol.owner.parentAsClass.descriptor.fqNameSafe == name
     }
 
+@OptIn(DescriptorBasedIr::class)
 fun IrAnnotationContainer.hasAnnotation(name: FqName) =
     annotations.any {
         it.symbol.owner.parentAsClass.descriptor.fqNameSafe == name
@@ -366,6 +350,7 @@ fun IrValueParameter.hasDefaultValue(): Boolean = DFS.ifAny(
     { current -> current.defaultValue != null }
 )
 
+@DescriptorBasedIr
 fun IrValueParameter.copy(newDescriptor: ParameterDescriptor): IrValueParameter {
     assert(this.descriptor.type == newDescriptor.type)
 
@@ -473,8 +458,9 @@ fun irCall(
             type,
             newSymbol,
             typeArgumentsCount,
-            origin,
-            newSuperQualifierSymbol
+            valueArgumentsCount = newSymbol.owner.valueParameters.size,
+            origin = origin,
+            superQualifierSymbol = newSuperQualifierSymbol
         ).apply {
             copyTypeAndValueArgumentsFrom(
                 call,
