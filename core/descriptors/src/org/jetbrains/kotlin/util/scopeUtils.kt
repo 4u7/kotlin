@@ -148,7 +148,9 @@ inline fun <reified T, reified R> Iterable<*>.filterIsInstanceMap(transform: (T)
     filterIsInstanceMapTo<T, R, SmartList<R>>(SmartList<R>(), transform)
 
 inline fun <reified T, reified R, C : MutableCollection<in R>> Iterable<*>.filterIsInstanceMapTo(destination: C, transform: (T) -> R): C {
-    for (element in this) if (element is T) destination.add(transform(element))
+    for (element in this) if (element is T) {
+        destination.add(transform(element))
+    }
     return destination
 }
 

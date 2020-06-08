@@ -57,7 +57,7 @@ open class LazyClassMemberScope(
     c, declarationProvider, thisClass, trace, scopeForDeclaredMembers
 ) {
 
-    private val descriptorsFromDeclaredElements = storageManager.createLazyValue {
+    private val allDescriptors = storageManager.createLazyValue {
         val result = LinkedHashSet(
             computeDescriptorsFromDeclaredElements(
                 DescriptorKindFilter.ALL,
@@ -72,7 +72,7 @@ open class LazyClassMemberScope(
     override fun getContributedDescriptors(
         kindFilter: DescriptorKindFilter,
         nameFilter: (Name) -> Boolean
-    ): Collection<DeclarationDescriptor> =descriptorsFromDeclaredElements()
+    ): Collection<DeclarationDescriptor> = allDescriptors()
 
     protected open fun computeExtraDescriptors(location: LookupLocation): Collection<DeclarationDescriptor> {
         val result = ArrayList<DeclarationDescriptor>()

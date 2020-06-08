@@ -173,6 +173,57 @@ class ReplTest : TestCase() {
         )
     }
 
+    @Test
+    fun testLongEval2() {
+        checkEvaluateInRepl(
+            sequence {
+                var count = 0
+                while (true) {
+                    val prev = if (count == 0) "0" else "p${count - 1}.first + $count"
+                    yield("val p$count = Pair($count, $prev); $count")
+                    count++
+                }
+            },
+            sequence {
+                var acc = 0
+                var count = 0
+                while (true) {
+                    yield(count)
+                    acc += ++count
+                }
+            },
+            limit = 100
+        )
+    }
+
+    @Test
+    fun testLongEva3l() {
+        checkEvaluateInRepl(
+            sequence {
+                var count = 0
+                while (true) {
+                    val prev = if (count == 0) "0" else "obj${count - 1}.prop${count - 1} + $count"
+                    yield("object obj$count { val prop$count = $prev; val p$count = Pair($prev, \"t\") }; $prev")
+                    count++
+                }
+            },
+            sequence {
+                var acc = 0
+                var count = 0
+                while (true) {
+                    yield(acc)
+                    acc += ++count
+                }
+            },
+//            ScriptCompilationConfiguration(
+//                {
+//                    compilerOptions("-XXLanguage:-NewInference")
+//                }
+//            ),
+            limit = 100
+        )
+    }
+
     companion object {
         private fun evaluateInRepl(
             snippets: Sequence<String>,

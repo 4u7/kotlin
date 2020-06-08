@@ -20,7 +20,6 @@ import org.jetbrains.kotlin.resolve.scopes.SyntheticScope
 import org.jetbrains.kotlin.resolve.scopes.SyntheticScopes
 import org.jetbrains.kotlin.storage.StorageManager
 import org.jetbrains.kotlin.util.collectionUtils.filterIsInstanceMapNotNull
-import org.jetbrains.kotlin.utils.SmartList
 
 class FunInterfaceConstructorsScopeProvider(
     storageManager: StorageManager,
@@ -49,8 +48,7 @@ class FunInterfaceConstructorsSyntheticScope(
         val classifier = scope.getContributedClassifier(name, location) ?: return emptyList()
         recordSamLookupsToClassifier(classifier, location)
 
-        val element = getSamConstructor(classifier)
-        return if (element != null) SmartList(element) else emptyList()
+        return listOfNotNull(getSamConstructor(classifier))
     }
 
     override fun getSyntheticConstructors(scope: ResolutionScope): Collection<FunctionDescriptor> =

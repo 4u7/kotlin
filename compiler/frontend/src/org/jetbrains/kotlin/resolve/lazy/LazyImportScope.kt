@@ -39,6 +39,7 @@ import org.jetbrains.kotlin.resolve.deprecation.DeprecationResolver
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.resolve.scopes.DescriptorKindFilter
 import org.jetbrains.kotlin.resolve.scopes.ImportingScope
+import org.jetbrains.kotlin.storage.LockBasedStorageManager
 import org.jetbrains.kotlin.storage.NotNullLazyValue
 import org.jetbrains.kotlin.storage.StorageManager
 import org.jetbrains.kotlin.types.expressions.OperatorConventions
@@ -57,7 +58,7 @@ inline fun <reified I : KtImportInfo> makeAllUnderImportsIndexed(imports: Collec
 
 class ExplicitImportsIndexed<I : KtImportInfo>(imports: Array<I>) : IndexedImports<I>(imports) {
 
-    private val nameToDirectives: ListMultimap<Name, I> by lazy(LazyThreadSafetyMode.PUBLICATION) {
+    private val nameToDirectives: NotNullLazyValue<ListMultimap<Name, I>> = LockBasedStorageManager.NO_LOCKS.createLazyValue {
         val builder = ImmutableListMultimap.builder<Name, I>()
 
         for (directive in imports) {
@@ -68,7 +69,7 @@ class ExplicitImportsIndexed<I : KtImportInfo>(imports: Array<I>) : IndexedImpor
         builder.build()
     }
 
-    override fun importsForName(name: Name) = nameToDirectives.get(name)
+    override fun importsForName(name: Name) = nameToDirectives().get(name)
 }
 
 inline fun <reified I : KtImportInfo> makeExplicitImportsIndexed(imports: Collection<I>) : IndexedImports<I> =
