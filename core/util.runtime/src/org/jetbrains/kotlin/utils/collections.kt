@@ -82,7 +82,7 @@ private fun capacity(expectedSize: Int): Int =
 fun <T> ArrayList<T>.compact(): List<T> =
     when (size) {
         0 -> emptyList()
-        1 -> SmartList(first())
+        1 -> listOf(first())
         else -> apply { trimToSize() }
     }
 
