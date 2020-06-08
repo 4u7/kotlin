@@ -154,6 +154,7 @@ enum class LanguageFeature(
     NonStrictOnlyInputTypesChecks(sinceVersion = KOTLIN_1_4),
     SuspendConversion(sinceVersion = KOTLIN_1_4, defaultState = State.DISABLED),
     OverloadResolutionByLambdaReturnType(sinceVersion = KOTLIN_1_4),
+    ContractsOnCallsWithImplicitReceiver(sinceVersion = KOTLIN_1_4),
 
     BooleanElvisBoundSmartCasts(sinceVersion = KOTLIN_1_3, defaultState = State.DISABLED), // see KT-26357 for details
     NewDataFlowForTryExpressions(sinceVersion = KOTLIN_1_4, defaultState = State.DISABLED),
@@ -162,8 +163,6 @@ enum class LanguageFeature(
     // Next features can be enabled regardless of new inference
 
     InlineClasses(sinceVersion = KOTLIN_1_3, defaultState = State.ENABLED_WITH_WARNING, kind = UNSTABLE_FEATURE),
-
-    ContractsOnCallsWithImplicitReceiver(sinceVersion = KOTLIN_1_3, defaultState = State.DISABLED),
     ;
 
     val presentableName: String
